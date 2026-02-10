@@ -1,0 +1,19 @@
+{
+  "name": "yeluyang-skills",
+  "description": "Personal Claude Code skills marketplace by yeluyang",
+  "owner": {
+    "name": "yeluyang",
+    "url": "https://github.com/yeluyang"
+  },
+  "plugins": [
+    {
+      "name": "hello-world",
+      "description": "A sample Hello World skill to verify plugin installation works correctly",
+      "version": "0.1.0",
+      "source": "./plugins/hello-world",
+      "author": {
+        "name": "yeluyang"
+      }
+    }
+  ]
+}
