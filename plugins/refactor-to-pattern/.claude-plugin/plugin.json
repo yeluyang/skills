@@ -1,0 +1,11 @@
+{
+  "name": "refactor-to-pattern",
+  "version": "0.1.0",
+  "description": "Refactoring workflow — evaluate code with DRY + SOLID, decompose by SRP, organize by architectural layers, discover design patterns organically from code symptoms",
+  "author": {
+    "name": "yeluyang",
+    "url": "https://github.com/yeluyang"
+  },
+  "repository": "https://github.com/yeluyang/skills",
+  "license": "MIT"
+}
