@@ -33,6 +33,22 @@ If the repo is a **monorepo**, identify sub-projects and ask the user which one 
 
 Quick scan of manifests to identify primary language(s), major frameworks, and package manager(s).
 
+## Evaluate Complexity
+
+After classifying the project type, assess architectural complexity by examining:
+
+- **Codebase size** — approximate lines of code (excluding generated code, vendored dependencies, and test files)
+- **Entry points** — how many (single main, multiple servers/cron jobs/CLIs)?
+- **External integrations** — databases, caches, message queues, RPC services, third-party APIs?
+- **Architectural layering** — flat structure, or distinct layers (presentation, business logic, data access, infrastructure)?
+- **Domain modeling** — simple data structs, or rich domain entities with business rules?
+
+| Complexity | Signals                                                                                                                                                                                                                   |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Low**    | Small codebase (< ~1k LoC); single entry point; no or few external integrations; flat directory structure; logic is straightforward data-in/data-out                                                                      |
+| **Medium** | Medium codebase (~1k–5k LoC); a distinct presentation/interface layer OR multiple entry points; some external integrations (1–2 databases, an API client); moderate separation of concerns                                |
+| **High**   | Large codebase (> ~5k LoC); multiple entry points; multiple external system integrations; distinct architectural layers (handler, service, domain, repository, infrastructure); rich domain modeling; IDL/API definitions |
+
 ## Output
 
 Log detection results in the following format:
@@ -42,4 +58,6 @@ Project type: <type>
 Language(s): <languages>
 Framework(s): <frameworks>
 Package manager(s): <package managers>
+Complexity: <Low | Medium | High>
+Signals: <brief list of observed structural characteristics that justify the rating>
 ```
