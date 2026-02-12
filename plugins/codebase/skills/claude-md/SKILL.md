@@ -1,5 +1,5 @@
 ---
-name: claude-md
+name: codebase:claude-md
 description: Generate or update CLAUDE.md — deep-analyze a codebase to extract stable knowledge (architecture, conventions, design philosophy) and volatile operational details (build, test, deploy commands) into agent-optimized project documentation
 ---
 

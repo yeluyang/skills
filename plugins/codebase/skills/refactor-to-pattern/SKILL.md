@@ -1,5 +1,5 @@
 ---
-name: refactor-to-pattern
+name: codebase:refactor-to-pattern
 description: Refactoring workflow — evaluate code with DRY + SOLID, decompose by SRP, organize by architectural layers, discover design patterns organically from code symptoms
 ---
 
