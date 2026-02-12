@@ -1,10 +1,12 @@
-# Step 1: Project Overview
+---
+description: Detect project type, primary languages, and frameworks by examining build files, manifests, entry points, and directory structure
+---
 
-**Goal:** Identify what this codebase is and what it does at the highest level.
+# Detect Project Type
 
-## 1.1 Detect Project Type
+Examine build files, project manifests, entry points, directory structure, and README to classify the codebase. Confirm the result with the user before proceeding.
 
-Examine build files, project manifests, entry points, directory structure, and README to classify the codebase. Confirm with the user.
+## Classification Table
 
 | Type                     | Signals                                                                                                   |
 | ------------------------ | --------------------------------------------------------------------------------------------------------- |
@@ -17,7 +19,7 @@ Examine build files, project manifests, entry points, directory structure, and R
 | **Desktop App**          | Electron/Tauri config, native GUI framework imports, window management code                               |
 | **Network Service**      | Server bootstrap, route/handler registration, middleware pipeline, database connections                   |
 | **SDK / Library**        | Exports a public API; no `main` entry point; published to a package registry                              |
-| **Data Pipeline / ETL**  | DAG definitions, source→transform→sink structure; scheduler config (Airflow, Spark)                       |
+| **Data Pipeline / ETL**  | DAG definitions, source-transform-sink structure; scheduler config (Airflow, Spark)                       |
 | **ML / AI Project**      | Training loops, model definitions, dataset loaders, inference endpoints                                   |
 | **Infrastructure / IaC** | Terraform, Pulumi, CloudFormation, Kubernetes manifests; declarative resource definitions                 |
 | **Monorepo**             | Workspace config (nx, turborepo, bazel, lerna); multiple sub-projects with shared packages                |
@@ -25,33 +27,19 @@ Examine build files, project manifests, entry points, directory structure, and R
 | **Embedded / Firmware**  | Hardware abstraction layers, memory-constrained patterns, RTOS imports                                    |
 | **Game**                 | Game loop, scene/entity system, asset pipeline, engine imports                                            |
 
-If the repo is a **monorepo**, identify sub-projects and ask the user which one to analyze first. Apply the full workflow to that sub-project.
+If the repo is a **monorepo**, identify sub-projects and ask the user which one to analyze first.
 
-## 1.2 Identify Entry Points
+## Identify Languages & Frameworks
 
-Find all entry points: `main()` functions, `package.json` scripts, `Makefile` targets, CLI commands, serverless handlers, etc. List them with one-line descriptions.
+Quick scan of manifests to identify primary language(s), major frameworks, and package manager(s).
 
-## 1.3 Output
+## Output
 
-Produce a structured overview:
+Log detection results in the following format:
 
-```markdown
-## Project Overview
-
-- **Name:** <project name>
-- **Type:** <detected type>
-- **Language(s):** <primary and secondary languages>
-- **Entry Points:**
-  - `cmd/server/main.go` — starts the HTTP/gRPC server
-  - `cmd/migrate/main.go` — runs database migrations
-- **Top-Level Structure:**
-  - `cmd/` — entry points
-  - `internal/` — application code
-  - `pkg/` — shared libraries
-  - ...
-- **Summary:** <2-3 sentence description of what this project does>
 ```
-
-## 1.4 Adaptive Routing
-
-After producing the overview, consult the adaptive routing table in `SKILL.md` to determine which steps apply to this project type (steps 1-7). Tell the user which steps will be executed and why, then proceed.
+Project type: <type>
+Language(s): <languages>
+Framework(s): <frameworks>
+Package manager(s): <package managers>
+```

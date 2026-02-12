@@ -1,0 +1,11 @@
+{
+  "name": "codebase",
+  "version": "0.1.0",
+  "description": "Codebase understanding, documentation, and refactoring toolkit — project type detection, guided walkthrough, CLAUDE.md generation, and pattern-based refactoring",
+  "author": {
+    "name": "yeluyang",
+    "url": "https://github.com/yeluyang"
+  },
+  "repository": "https://github.com/yeluyang/skills",
+  "license": "MIT"
+}

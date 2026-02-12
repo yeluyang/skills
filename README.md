@@ -18,12 +18,9 @@ Then browse and install plugins:
 
 ## Available Plugins
 
-| Plugin                                                | Description                                                                                                                                       | Version |
-| ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
-| [hello-world](plugins/hello-world/)                   | Sample skill to verify installation works                                                                                                         | 0.1.0   |
-| [claude-md](plugins/claude-md/)                       | Generate or update CLAUDE.md by deep-analyzing a codebase to extract stable knowledge and operational details into agent-optimized documentation  | 0.1.0   |
-| [codebase-walkthrough](plugins/codebase-walkthrough/) | Guided codebase understanding — detect project type, map dependencies, extract core concepts, enumerate API surfaces, and deep-dive interactively | 0.1.0   |
-| [refactor-to-pattern](plugins/refactor-to-pattern/)   | Refactoring workflow — evaluate code with DRY + SOLID, decompose by SRP, organize by architectural layers, discover design patterns organically   | 0.1.0   |
+| Plugin                        | Description                                                                                                                                              | Version |
+| ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| [codebase](plugins/codebase/) | Codebase understanding, documentation, and refactoring toolkit — type detection, guided walkthrough, CLAUDE.md generation, and pattern-based refactoring | 0.1.0   |
 
 ## Adding a New Plugin
 

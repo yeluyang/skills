@@ -71,33 +71,11 @@ The unit of work is a single version-controlled project (`.git/` boundary). Rule
 2. If the project already has multiple CLAUDE.md files in subdirectories (e.g., monorepo packages each with their own), follow that existing convention — update each one individually.
 3. Otherwise, one git project gets one root-level CLAUDE.md, including during bootstrap.
 
-### 1.3 Detect Project Type
+### 1.3 Detect Project Type & Identify Languages
 
-Examine build files, project manifests, entry points, directory structure, and README to classify the codebase:
+Invoke `/codebase:type` to detect project type, primary languages, frameworks, and package managers.
 
-| Type                     | Signals                                                                  |
-| ------------------------ | ------------------------------------------------------------------------ |
-| **API Protocol / IDL**   | Mostly `.proto`, `.thrift`, `.graphql`, OpenAPI specs; no runtime code   |
-| **Documentation Site**   | Static site generator config (docusaurus, mkdocs, hugo); mostly markdown |
-| **CLI**                  | Single entry point, argument parser (cobra, clap, argparse, click)       |
-| **Web Frontend**         | Component framework (React, Vue, Angular, Svelte); bundler config        |
-| **Mobile App**           | AndroidManifest.xml, Info.plist, Flutter/React Native config             |
-| **Desktop App**          | Electron/Tauri config, native GUI framework                              |
-| **Network Service**      | Server bootstrap, route/handler registration, middleware pipeline        |
-| **SDK / Library**        | Exports public API; no `main` entry point; published to registry         |
-| **Data Pipeline / ETL**  | DAG definitions, source-transform-sink; scheduler config                 |
-| **ML / AI Project**      | Training loops, model definitions, dataset loaders                       |
-| **Infrastructure / IaC** | Terraform, Pulumi, CloudFormation, k8s manifests                         |
-| **Monorepo**             | Workspace config (nx, turborepo, bazel, lerna); multiple sub-projects    |
-| **Plugin / Extension**   | Host platform manifest (VS Code contributes, browser manifest.json)      |
-| **Embedded / Firmware**  | HAL, RTOS imports, memory-constrained patterns                           |
-| **Game**                 | Game loop, entity/component system, engine imports                       |
-
-### 1.4 Identify Languages & Frameworks
-
-Quick scan of manifests to identify primary language(s), major frameworks, and package manager(s).
-
-### 1.5 Output
+### 1.4 Output
 
 Log detection results and proceed to Step 2:
 

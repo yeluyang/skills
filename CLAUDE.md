@@ -18,16 +18,16 @@ plugins/<name>/                   ← One directory per plugin
 
 Plugins are self-contained — each `plugins/<name>/` directory holds everything Claude Code needs to load that plugin. The root `marketplace.json` is the index that ties them together.
 
-Complex skills can include supplementary Markdown files alongside `SKILL.md` in the same directory (e.g., `codebase-walkthrough` has step-1 through step-7 guides that the main skill references).
+Complex skills can include supplementary Markdown files alongside `SKILL.md` in the same directory (e.g., `walkthrough` has step-1 through step-7 guides that the main skill references).
 
 ## Conventions
 
-- Plugin directories use kebab-case: `plugins/hello-world/`
+- Plugin directories use kebab-case: `plugins/codebase/`
 - Skill directories match the skill name: skill `claude-md` lives in `skills/claude-md/SKILL.md`
 - Each plugin has its own `plugin.json` with `name`, `version`, `description`, `author`, `repository`, `license`
 - Skills use YAML frontmatter (`name`, `description`) followed by Markdown prompt body
 - Commands use YAML frontmatter (`description`) followed by Markdown prompt body
-- Skills are triggered by user intent detection; commands are explicit slash commands (`/hello`)
+- Skills are triggered by user intent detection; commands are explicit slash commands (`/codebase:type`)
 - Versioning is semver (`0.1.0`)
 
 ## How to Add

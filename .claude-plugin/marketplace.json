@@ -7,37 +7,10 @@
   },
   "plugins": [
     {
-      "name": "hello-world",
-      "description": "A sample Hello World skill to verify plugin installation works correctly",
+      "name": "codebase",
+      "description": "Codebase understanding, documentation, and refactoring toolkit — project type detection, guided walkthrough, CLAUDE.md generation, and pattern-based refactoring",
       "version": "0.1.0",
-      "source": "./plugins/hello-world",
-      "author": {
-        "name": "yeluyang"
-      }
-    },
-    {
-      "name": "claude-md",
-      "description": "Generate or update CLAUDE.md by deep-analyzing a codebase to extract stable knowledge and operational details into agent-optimized project documentation",
-      "version": "0.1.0",
-      "source": "./plugins/claude-md",
-      "author": {
-        "name": "yeluyang"
-      }
-    },
-    {
-      "name": "codebase-walkthrough",
-      "description": "Guided codebase understanding — detect project type, map dependencies and external systems, extract core concepts, enumerate API surfaces, and deep-dive into request paths interactively",
-      "version": "0.1.0",
-      "source": "./plugins/codebase-walkthrough",
-      "author": {
-        "name": "yeluyang"
-      }
-    },
-    {
-      "name": "refactor-to-pattern",
-      "description": "Refactoring workflow — evaluate code with DRY + SOLID, decompose by SRP, organize by architectural layers, discover design patterns organically from code symptoms",
-      "version": "0.1.0",
-      "source": "./plugins/refactor-to-pattern",
+      "source": "./plugins/codebase",
       "author": {
         "name": "yeluyang"
       }
