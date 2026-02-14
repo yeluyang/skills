@@ -17,6 +17,27 @@ Invoke this skill when:
 
 If you are still **implementing** new functionality, finish the implementation first. Make it work, make it pass tests, then invoke this skill.
 
+## Stance on Project Conventions
+
+Refactoring tears down old structure and builds better structure. The project's existing documentation — `CLAUDE.md`, `README.md`, style guides, architectural decision records — **describes what the code is today, not what it should become**. Treat these documents as reference material, not as binding constraints.
+
+**During this workflow:**
+
+1. **This skill's principles (DRY, SOLID, layer architecture) take precedence** over any project-level conventions, naming rules, structural patterns, or architectural prescriptions found in documentation.
+2. **When a conflict arises** between this skill's guidance and a project convention, you MUST:
+   - **Stop and surface the conflict explicitly** to the user — do not silently comply with the project rule.
+   - State what the project convention says and where it comes from.
+   - State what this skill's analysis recommends instead.
+   - Explain the trade-offs of each direction.
+   - **Let the user decide** which path to take.
+3. **Never assume existing conventions are correct.** The conventions may themselves be the source of the code smells you are refactoring away. A style guide that mandates god-classes, a `CLAUDE.md` that prescribes a flat module structure, or a README that documents a tangled dependency graph — these are potentially part of the problem.
+
+**What this does NOT mean:**
+
+- It does not mean ignore project docs entirely. Read them — they contain valuable context about why things are the way they are.
+- It does not mean break things for the sake of breaking them. Every deviation from existing convention must be justified by a concrete principle (SRP, DIP, etc.) or a concrete code smell.
+- It does not mean skip updating documentation. If the refactoring changes the project's architecture, remind the user that `CLAUDE.md` / `README.md` / other docs will need corresponding updates.
+
 ## Workflow
 
 ### Step 1: Annotate Responsibilities

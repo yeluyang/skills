@@ -51,6 +51,21 @@ Complex skills can include supplementary Markdown files alongside `SKILL.md` in 
 5. Register in root `.claude-plugin/marketplace.json` — add entry to `plugins` array with `name`, `description`, `version`, `source` (relative path to plugin dir), `author`
 6. Commit, push, tag a release
 
+## Updating Skills
+
+When modifying any skill (`SKILL.md`), command, or other plugin content:
+
+1. **Bump the plugin version** — update `version` in both:
+   - `plugins/<name>/.claude-plugin/plugin.json`
+   - `.claude-plugin/marketplace.json` (the corresponding entry)
+2. **Keep versions in sync** — both files must show the same version for the plugin.
+3. **Use semver**:
+   - Patch (`0.1.2` → `0.1.3`): wording tweaks, clarifications, minor prompt adjustments
+   - Minor (`0.1.3` → `0.2.0`): new skill/command added, significant workflow changes, new sections
+   - Major (`0.2.0` → `1.0.0`): breaking changes to skill behavior or plugin structure
+
+This is easy to forget — **treat the version bump as part of the edit, not a separate step.**
+
 ## Commands
 
 No build, test, or lint steps — this is a content-only repository. Validate by inspecting JSON/Markdown structure manually or by installing into Claude Code and testing.

@@ -9,7 +9,7 @@
     {
       "name": "codebase",
       "description": "Codebase understanding, documentation, and refactoring toolkit — project type detection, guided walkthrough, CLAUDE.md generation, and pattern-based refactoring",
-      "version": "0.1.0",
+      "version": "0.1.3",
       "source": "./plugins/codebase",
       "author": {
         "name": "yeluyang"
