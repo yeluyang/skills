@@ -59,18 +59,37 @@ For every pair of related building blocks, decide:
 
 > **Note:** First run `/codebase:type` to detect the project type, languages, and frameworks. The layer reference below represents the most complex scenario (e.g., large network services, monorepos). Not every project needs all these layers. Map your building blocks to whichever layers are **actually present** in the codebase — if the project has no IDL, no infrastructure adapters, or no separate domain layer, skip them. Do not introduce layers that the codebase does not need.
 
+**Dependency graph — an edge A → B means "A may import B":**
+
+```dot
+digraph dependency {
+    rankdir=TB;
+    node [shape=box];
+
+    // top-level entry points — only outgoing edges, nothing depends on these
+    { rank=same; boot; tools; }
+    // foundation — depended on by all upper layers
+    { rank=same; configs; common; api; }
+
+    // each layer may import any layer below it
+    boot   -> {app; domain; repo; infra; configs; common; api};
+    tools  -> {app; domain; repo; infra; configs; common; api};
+    app    -> {domain; repo; infra; configs; common; api};
+    domain -> {repo; infra; configs; common; api};
+    repo   -> {infra; configs; common; api};
+    infra  -> {configs; common; api};
+}
+```
+
 **Constraints:**
 
-- Layers are ordered top-down by dependency: each layer may depend on layers below it, but never the reverse.
-- Cross-layer dependencies target interfaces (ports), not concrete implementations — except for shared packages: `utils/`, `configs/`, `common/`.
+- Cross-layer imports target **interfaces (ports)**, not concrete implementations — except foundation packages (`configs/`, `common/`, `api/`) which are imported as concrete types.
+- `utils/` is an **anti-corruption layer** outside the dependency graph. Each package within `utils/` has its own effective tier determined by its actual dependencies — apply the same directional rules accordingly.
 
 **Layers:**
 
 ```
 ./
-├── api/                          # API definitions
-│   ├── idl/                      # Interface definition files (.proto, .thrift)
-│   └── gen/                      # Auto-generated code from IDL
 ├── boot/                         # Entry points — environment init and dependency injection
 │   ├── some_cronjob_boot/
 │   └── some_server_boot/
@@ -79,6 +98,7 @@ For every pair of related building blocks, decide:
 ├── app/                          # Application layer — use-case orchestration
 │   ├── cronjob/                  # Scheduled task use cases
 │   ├── handler/                  # RPC/HTTP request handlers (controller layer)
+│   ├── middleware/               # Transport middleware (interceptors, hooks)
 │   ├── srv/
 │   │   └── some_app_service_impl/
 │   └── interfaces.xx             # Application service interfaces (ports)
@@ -111,12 +131,14 @@ For every pair of related building blocks, decide:
 │   └── rpc/
 ├── utils/                        # Business-aware shared utilities (cross-cutting)
 │   ├── other_utils/
-│   ├── errs/
-│   │   ├── codes.xx              # Error code definitions
-│   │   └── error.xx              # Custom error types
-│   └── middleware/               # Transport middleware (interceptors, hooks)
+│   └── errs/
+│       ├── codes.xx              # Error code definitions
+│       └── error.xx              # Custom error types
 ├── configs/                      # Configuration definitions
 │   └── static/                   # Embedded resource files
+├── api/                          # API definitions
+│   ├── idl/                      # Interface definition files (.proto, .thrift)
+│   └── gen/                      # Auto-generated code from IDL
 └── common/                       # Business-agnostic shared libraries
     ├── other_common/
     └── utils/

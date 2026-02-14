@@ -45,7 +45,6 @@ After completing each step, output a progress table:
 - **Stable knowledge floats up** — Order the document so an agent hitting context limits still gets the most durable, high-value knowledge first.
 - **Don't duplicate the code** — Capture _why_ and _how to navigate_, not _what the code does line by line_. If something is obvious from reading the code, don't repeat it.
 - **Patterns over inventory** — Describe _how the project is organized_ (the pattern), not _what files currently exist_ (the inventory). An agent can `ls` and `glob`; it cannot infer naming conventions, organizational rules, or where to put new code. A file tree enumerating every file becomes stale on the next commit. A description of the organizational pattern stays valid across many changes.
-- **Respect existing voice** — In update mode, match the tone and style of the existing CLAUDE.md rather than imposing a new one.
 - **Minimal viable documentation** — Every section earns its place. No boilerplate, no filler, no sections included "just because the template has them".
 
 ---
