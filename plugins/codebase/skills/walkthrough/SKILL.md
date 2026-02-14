@@ -50,27 +50,7 @@ Execute steps in order. Each step is documented in its own file — **read the s
 
 ### Adaptive Routing
 
-Based on detected project type in Step 1, adjust which steps are executed:
-
-| Type                 | Steps to Execute                                           |
-| -------------------- | ---------------------------------------------------------- |
-| API Protocol / IDL   | 1 → 4 (schemas as concepts) → 5 (endpoint listing) → 7     |
-| Documentation Site   | 1 → 3 (build) → 7                                          |
-| CLI (single-run)     | 1 → 2 → 3 → 4 → 6 (trace main flow directly) → 7           |
-| CLI (daemon)         | 1 → 2 → 3 → 4 → 5 (commands/events) → 6 → 7                |
-| Web Frontend         | 1 → 2 → 3 → 4 → 5 (routes/pages) → 6 → 7                   |
-| Mobile App           | 1 → 2 → 3 → 4 → 5 (screens/navigation) → 6 → 7             |
-| Desktop App          | 1 → 2 → 3 → 4 → 5 (windows/IPC) → 6 → 7                    |
-| Network Service      | 1 → 2 → 3 → 4 → 5 → 6 → 7 (full workflow)                  |
-| SDK / Library        | 1 → 2 → 3 → 4 → 5 (public API surface) → 6 → 7             |
-| Data Pipeline / ETL  | 1 → 2 → 3 → 4 → 5 (pipeline stages) → 6 → 7                |
-| ML / AI Project      | 1 → 2 → 3 → 4 → 5 (training/inference flows) → 6 → 7       |
-| Infrastructure / IaC | 1 → 2 → 3 → 4 (resources & modules) → 7                    |
-| Plugin / Extension   | 1 → 2 → 3 → 4 → 5 (activation events/commands) → 6 → 7     |
-| Embedded / Firmware  | 1 → 2 → 3 → 4 → 5 (interrupt handlers/peripherals) → 6 → 7 |
-| Game                 | 1 → 2 → 3 → 4 → 5 (game loop/systems) → 6 → 7              |
-
-Tell the user which steps will be executed and why, then proceed.
+Not all project types need all 7 steps. Step 1 determines the project type and selects the applicable steps — see the routing table in `step-1-project-overview.md`.
 
 ## Guiding Principles
 

@@ -4,7 +4,7 @@ description: Detect project type, primary languages, and frameworks by examining
 
 # Detect Project Type
 
-Examine build files, project manifests, entry points, directory structure, and README to classify the codebase. Confirm the result with the user before proceeding.
+Examine build files, project manifests, entry points, directory structure, and README to classify the codebase.
 
 ## Classification Table
 
@@ -27,7 +27,7 @@ Examine build files, project manifests, entry points, directory structure, and R
 | **Embedded / Firmware**  | Hardware abstraction layers, memory-constrained patterns, RTOS imports                                    |
 | **Game**                 | Game loop, scene/entity system, asset pipeline, engine imports                                            |
 
-If the repo is a **monorepo**, identify sub-projects and ask the user which one to analyze first.
+If the repo is a **monorepo**, identify sub-projects and list them in the output.
 
 ## Identify Languages & Frameworks
 

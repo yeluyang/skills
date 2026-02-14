@@ -29,6 +29,12 @@ Complex skills can include supplementary Markdown files alongside `SKILL.md` in 
 - Commands use YAML frontmatter (`description`) followed by Markdown prompt body
 - Skills are triggered by user intent detection; commands are explicit slash commands (`/codebase:type`)
 - Versioning is semver (`0.1.0`)
+- **Skill dependency rules** — when a skill (`SKILL.md`) decomposes into sub-files (`step-*.md`, `part-*.md`, etc.):
+  - Dependencies flow **parent → child only**; sub-files must never reference the parent `SKILL.md`
+  - Sibling sub-files must not reference each other directly
+  - Data flows through the parent: parent executes child A, receives output, passes it to child B
+  - If a sub-file needs material from a sibling, that coupling is wrong — extract the dependent part into its own sub-file and let the parent orchestrate the ordering
+- **Commands must not block when invoked by skills** — commands (e.g., `/codebase:type`) may be called by skills as sub-steps; avoid prompts like "confirm with user before proceeding" that stall automated workflows
 
 ## How to Add
 
