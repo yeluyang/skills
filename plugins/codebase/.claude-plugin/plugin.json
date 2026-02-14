@@ -1,6 +1,6 @@
 {
   "name": "codebase",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Codebase understanding, documentation, and refactoring toolkit — project type detection, guided walkthrough, CLAUDE.md generation, and pattern-based refactoring",
   "author": {
     "name": "yeluyang",

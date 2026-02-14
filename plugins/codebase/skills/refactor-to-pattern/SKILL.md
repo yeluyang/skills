@@ -136,7 +136,7 @@ digraph dependency {
 │   ├── some_data_repository_impl/
 │   ├── entities.xx               # Data models / table mappings
 │   └── interfaces.xx             # Repository interfaces (ports)
-├── infra/                        # Infrastructure adapters — external system wrappers
+├── infra/                        # Infrastructure adapters — interfaces define canonical data model, impls normalize external returns
 │   ├── cache/
 │   ├── kv/
 │   ├── mq/
@@ -144,11 +144,11 @@ digraph dependency {
 │   ├── other_infra/
 │   ├── rds/
 │   │   ├── mysql/
-│   │   │   └── impl.xx
+│   │   │   └── impl.xx           # Parse/convert external returns → canonical model
 │   │   ├── postgres/
-│   │   │   └── impl.xx
+│   │   │   └── impl.xx           # Parse/convert external returns → canonical model
 │   │   ├── clients.xx            # Client/connection registry
-│   │   └── interfaces.xx         # Unified relational DB interface
+│   │   └── interfaces.xx         # Unified interface + canonical data types
 │   └── rpc/
 ├── utils/                        # Business-aware shared utilities (cross-cutting)
 │   ├── other_utils/
@@ -164,6 +164,8 @@ digraph dependency {
     ├── other_common/
     └── utils/
 ```
+
+**Infra as anti-corruption boundary:** Each infra sub-package's `interfaces.xx` defines both the method contract and a **canonical data model** — the normalized types that upper layers consume. Concrete implementations parse and convert external returns (SDK objects, raw strings, byte streams, etc.) into this canonical model, so upper layers see one uniform data shape regardless of which backend is behind the interface.
 
 ### Step 4: Discover Patterns from Symptoms
 
