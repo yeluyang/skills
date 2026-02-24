@@ -1,11 +1,11 @@
 ---
 name: codebase:refactor-to-pattern
-description: Refactoring workflow — evaluate code with DRY + SOLID, decompose by SRP, organize by architectural layers, discover design patterns organically from code symptoms
+description: Refactoring workflow — test coverage gate, DRY + SOLID analysis, SRP decomposition, pattern discovery, spec-driven user review, and execution planning
 ---
 
 # Refactor to Pattern
 
-Structured refactoring workflow: evaluate existing code with DRY + SOLID principles, decompose by single responsibility, organize by architectural layers, and discover design patterns organically from code symptoms.
+Refactoring workflow: verify test coverage, analyze with DRY + SOLID principles, design decomposition and relationships, discover patterns from symptoms, write a chunked spec for interactive review, and execute with regression safety.
 
 ## When to Use
 
@@ -40,25 +40,53 @@ Refactoring tears down old structure and builds better structure. The project's 
 
 ## Workflow
 
-### Step 1: Annotate Responsibilities
+Steps with a file reference are documented in separate files — **read the file before executing that step**.
 
-Add a comment block to every class and non-trivial function documenting its **current responsibilities** as a bulleted list.
+### Step 0: Test Coverage Gate
+
+Refactoring without tests is flying blind — tests are the safety net that ensures behavior is preserved through structural changes. Before touching any code, verify the refactoring target has adequate coverage.
+
+1. **Invoke `codebase:testing`** on the same scope the user specified for refactoring (whole repo, directory, file, or function)
+2. **Execute through Step 3** of the testing skill (Code Analysis → Test Design → Existing Test Audit). Stop after the Step 3 audit report — do not proceed to Steps 4–5
+3. **Evaluate the audit** using the gap analysis from the Step 3 output:
+
+**Gate passes — proceed to Step 1** when:
+
+- The "Remaining To-Write" gap list contains no high-priority items targeting core logic of the refactoring scope
+- Existing tests cover the critical paths that refactoring will restructure
+- The test suite can reliably catch regressions from structural changes
+
+**Gate fails — stop and redirect** when:
+
+- High-priority gaps exist in core logic or critical paths of the refactoring scope
+- The existing test suite is too sparse to serve as a refactoring safety net
+
+When the gate fails:
+
+- Present the gap analysis to the user
+- Recommend completing the full `codebase:testing` workflow (Steps 4–5) to close the gaps first
+- Explain: refactoring without tests risks silent regressions that go undetected until production
+- The user can re-invoke `codebase:refactor-to-pattern` after test coverage is adequate
+
+### Step 1: Analyze Responsibilities
+
+For every class and non-trivial function in the refactoring scope, document its **current responsibilities** as a bulleted list (in your analysis notes, not as code comments — no code changes yet).
 
 ```
-// Responsibilities:
-// - Validates user input
-// - Queries database for user record
-// - Sends welcome email
-// - Returns formatted response
+UserService:
+- Validates user input
+- Queries database for user record
+- Sends welcome email
+- Returns formatted response
 ```
 
 Any unit with 2+ distinct responsibilities is an SRP violation and a refactoring target. Mark these explicitly.
 
-### Step 2: Decompose by Single Responsibility
+### Step 2: Design Decomposition
 
-Split every multi-responsibility unit into focused, single-purpose units. Each resulting unit should have exactly one reason to change.
+For every multi-responsibility unit identified in Step 1, **design** how to split it into focused, single-purpose units. Each resulting unit should have exactly one reason to change.
 
-After decomposition you will have many small "building blocks" — each doing one thing well. Do not reorganize them yet. Just decompose.
+The output is a decomposition plan — a list of new "building blocks," each doing one thing well, with clear names and responsibilities. Do not reorganize them yet, and do not modify code yet. Just design the split.
 
 ### Step 3: Analyze Relationships — Cohesion vs Decoupling
 
@@ -78,98 +106,11 @@ For every pair of related building blocks, decide:
 
 #### Layer Reference
 
-> **Note:** First run `/codebase:type` to detect the project type, languages, and frameworks. The layer reference below represents the most complex scenario (e.g., large network services, monorepos). Not every project needs all these layers. Map your building blocks to whichever layers are **actually present** in the codebase — if the project has no IDL, no infrastructure adapters, or no separate domain layer, skip them. Do not introduce layers that the codebase does not need.
-
-**Dependency graph — an edge A → B means "A may import B":**
-
-```dot
-digraph dependency {
-    rankdir=TB;
-    node [shape=box];
-
-    // top-level entry points — only outgoing edges, nothing depends on these
-    { rank=same; boot; tools; }
-    // foundation — depended on by all upper layers
-    { rank=same; configs; common; api; }
-
-    // each layer may import any layer below it
-    boot   -> {app; domain; repo; infra; configs; common; api};
-    tools  -> {app; domain; repo; infra; configs; common; api};
-    app    -> {domain; repo; infra; configs; common; api};
-    domain -> {repo; infra; configs; common; api};
-    repo   -> {infra; configs; common; api};
-    infra  -> {configs; common; api};
-}
-```
-
-**Constraints:**
-
-- Cross-layer imports target **interfaces (ports)**, not concrete implementations — except foundation packages (`configs/`, `common/`, `api/`) which are imported as concrete types.
-- `utils/` is an **anti-corruption layer** outside the dependency graph. Each package within `utils/` has its own effective tier determined by its actual dependencies — apply the same directional rules accordingly.
-
-**Layers:**
-
-```
-./
-├── boot/                         # Entry points — environment init and dependency injection
-│   ├── some_cronjob_boot/
-│   └── some_server_boot/
-├── tools/                        # Project tooling: build scripts, CLIs, code generators
-│   └── some_tools/
-├── app/                          # Application layer — use-case orchestration
-│   ├── cronjob/                  # Scheduled task use cases
-│   ├── handler/                  # RPC/HTTP request handlers (controller layer)
-│   ├── middleware/               # Transport middleware (interceptors, hooks)
-│   ├── srv/
-│   │   └── some_app_service_impl/
-│   └── interfaces.xx             # Application service interfaces (ports)
-├── domain/                       # Domain layer — core business logic
-│   ├── entity/
-│   │   └── some_domain_entity/   # Aggregate roots, complex entity clusters
-│   ├── srv/
-│   │   └── some_domain_service_impl/
-│   ├── entities.xx               # Value objects, standalone entities
-│   └── interfaces.xx             # Domain service interfaces (ports)
-├── repo/                         # Repository layer — data access (CRUD)
-│   ├── entity/
-│   │   └── some_persistent_entity/
-│   ├── some_data_repository_impl/
-│   ├── entities.xx               # Data models / table mappings
-│   └── interfaces.xx             # Repository interfaces (ports)
-├── infra/                        # Infrastructure adapters — interfaces define canonical data model, impls normalize external returns
-│   ├── cache/
-│   ├── kv/
-│   ├── mq/
-│   ├── oss/
-│   ├── other_infra/
-│   ├── rds/
-│   │   ├── mysql/
-│   │   │   └── impl.xx           # Parse/convert external returns → canonical model
-│   │   ├── postgres/
-│   │   │   └── impl.xx           # Parse/convert external returns → canonical model
-│   │   ├── clients.xx            # Client/connection registry
-│   │   └── interfaces.xx         # Unified interface + canonical data types
-│   └── rpc/
-├── utils/                        # Business-aware shared utilities (cross-cutting)
-│   ├── other_utils/
-│   └── errs/
-│       ├── codes.xx              # Error code definitions
-│       └── error.xx              # Custom error types
-├── configs/                      # Configuration definitions
-│   └── static/                   # Embedded resource files
-├── api/                          # API definitions
-│   ├── idl/                      # Interface definition files (.proto, .thrift)
-│   └── gen/                      # Auto-generated code from IDL
-└── common/                       # Business-agnostic shared libraries
-    ├── other_common/
-    └── utils/
-```
-
-**Infra as anti-corruption boundary:** Each infra sub-package's `interfaces.xx` defines both the method contract and a **canonical data model** — the normalized types that upper layers consume. Concrete implementations parse and convert external returns (SDK objects, raw strings, byte streams, etc.) into this canonical model, so upper layers see one uniform data shape regardless of which backend is behind the interface.
+Read `layer-reference.md` for the full architectural layer model — dependency graph, layer constraints, directory layout, and infra anti-corruption boundary. Use it to classify building blocks by layer.
 
 ### Step 4: Discover Patterns from Symptoms
 
-After decomposition and reorganization, examine the resulting code for **symptoms** that suggest a pattern. The flow is always: **observe symptom → analyze cause → recall or invent pattern**. Never start from a pattern catalog and force-fit.
+Based on the decomposition design and relationship analysis, examine the resulting structure for **symptoms** that suggest a pattern. The flow is always: **observe symptom → analyze cause → recall or invent pattern**. Never start from a pattern catalog and force-fit.
 
 | Symptom                                                 | Likely Cause                             | Candidate Patterns                              |
 | ------------------------------------------------------- | ---------------------------------------- | ----------------------------------------------- |
@@ -184,7 +125,7 @@ After decomposition and reorganization, examine the resulting code for **symptom
 
 This table is **suggestive, not prescriptive**. If the code's structure suggests a pattern not listed here, use it. If no known pattern fits, invent an ad-hoc structural solution — the goal is clean architecture, not pattern completeness.
 
-### Anti-Pattern: Top-Down Pattern Application
+#### Anti-Pattern: Top-Down Pattern Application
 
 **Never do this:**
 
@@ -199,6 +140,34 @@ This table is **suggestive, not prescriptive**. If the code's structure suggests
 4. Apply (or adapt) the pattern
 
 The difference: patterns **emerge** from well-decomposed code. They are names for structures you discover, not blueprints you impose.
+
+### Step 5: Write Refactoring Spec
+
+Read `step-5-spec.md` and follow it. Synthesize the analysis from Steps 1–4 into a chunked refactoring spec written to a file.
+
+### Step 6: Interactive Spec Review
+
+Walk through the spec with the user **in dependency order** — chunks that are depended on by others come first. The user always reviews on a foundation of already-approved context.
+
+1. Tell the user the spec file path
+2. Present **one chunk at a time** — show its scope, connections, and changes
+3. Ask the user for feedback on that chunk
+4. If the user gives feedback:
+   - Edit the relevant section in the spec file
+   - Show a brief summary of what changed
+   - Re-present the chunk for re-review
+5. Move to the next chunk after approval
+6. Final approval — confirm the complete spec is ready for execution
+
+**Key principle:** the file is the source of truth. The conversation holds summaries and diffs, never the full spec.
+
+### Step 7: Execution Plan
+
+Read `step-7-plan.md` and follow it. Convert the approved spec into an execution plan with dependency analysis and strategy recommendation.
+
+### Step 8: Execute
+
+Read `step-8-execute.md` and follow it. Execute using whichever strategy the user approved in Step 7.
 
 ## Guiding Principles
 
