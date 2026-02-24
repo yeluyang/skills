@@ -1,11 +1,11 @@
 ---
-name: testing
+name: codebase:testing
 description: Analyze codebase to design and implement comprehensive test coverage — top-down code analysis, bottom-up test design, edge case focus, existing test audit, and agent team execution
 ---
 
 # Testing
 
-Analyze a codebase to understand what tests it *needs*, audit what it already *has*, and execute a plan to close the gap. Philosophy: understand the code's testing requirements independently before looking at existing tests — prevents anchoring bias.
+Analyze a codebase to understand what tests it _needs_, audit what it already _has_, and execute a plan to close the gap. Philosophy: understand the code's testing requirements independently before looking at existing tests — prevents anchoring bias.
 
 ## When to Use
 
@@ -48,7 +48,7 @@ Execute steps in order. Each step is documented in its own file — **read the s
 
 | Step | File                         | Goal                                                             |
 | ---- | ---------------------------- | ---------------------------------------------------------------- |
-| 0    | *(this file)*                | Detect scope, invoke `/codebase:type`, route to steps            |
+| 0    | _(this file)_                | Detect scope, invoke `/codebase:type`, route to steps            |
 | 1    | `step-1-code-analysis.md`    | Top-down: trace call chains, identify leaf functions, categorize |
 | 2    | `step-2-test-design.md`      | Bottom-up: design tests from leaves upward, edge cases, flags    |
 | 3    | `step-3-existing-audit.md`   | Audit existing tests: keep, modify, delete, identify gaps        |
