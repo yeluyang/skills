@@ -2,9 +2,11 @@
 
 **Goal:** Synthesize all findings from Steps 1-3 into a complete testing spec. Present it to the user for review, iterate on feedback, and get final approval before execution.
 
-## 4.1 Synthesize Testing Spec
+## 4.1 Synthesize Testing Spec to File
 
-Compile the complete spec from all prior steps:
+Compile the complete spec from all prior steps and **write it to a file** (e.g., `testing-spec.md` in the project root or a location the user prefers). This keeps the spec out of the conversation context — critical for large codebases.
+
+The file should contain these sections:
 
 ### Section 1: Testing Philosophy
 
@@ -86,19 +88,27 @@ Common flagged decisions:
 | **Net change**         | +N / -N |
 ```
 
-## 4.2 Present and Iterate
+## 4.2 Present Summary and Iterate on File
 
-1. Present the complete spec to the user
-2. Ask: **"Does this testing spec look right? Any areas you want to adjust — add tests, remove tests, change priorities, or resolve the flagged decisions?"**
-3. If the user has feedback:
-   - Apply changes to the spec
-   - Re-present the affected sections
+The full spec lives in the file. In the conversation, only show a compact summary:
+
+1. Tell the user the spec file path
+2. Show **only** these in the conversation:
+   - The Statistics table (Section 5)
+   - Flagged Decisions (Section 4) — these require user input
+3. Ask: **"The full spec is saved to `<path>`. Above are the stats and decisions that need your input. Any areas you want to adjust — add tests, remove tests, change priorities, or resolve the flagged decisions?"**
+4. If the user has feedback:
+   - **Read** only the relevant section from the file
+   - **Edit** that section in the file
+   - Show the user a brief summary of what changed (not the full section)
    - Ask again until approved
-4. When approved, proceed to Step 5
+5. When approved, proceed to Step 5
+
+**Key principle:** the file is the source of truth. The conversation holds summaries and diffs, never the full spec.
 
 ## 4.3 Quality Gate
 
-Before proceeding, verify:
+Before proceeding, verify (by reading the spec file):
 
 - [ ] Every flagged decision has a resolution (user chose an option)
 - [ ] The spec is internally consistent (no tests referencing deleted functions, no gaps)
