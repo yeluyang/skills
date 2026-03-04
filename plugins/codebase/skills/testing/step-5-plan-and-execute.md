@@ -41,8 +41,6 @@ For each task, create a task definition:
 ```markdown
 ### Task: <descriptive name>
 
-**Tier:** 0 / 1 / 2 / 3
-**Blocked by:** <list of task IDs, or "none">
 **File:** <test file path to create or modify>
 
 **Action:** create / modify / delete

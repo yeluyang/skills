@@ -5,7 +5,7 @@ description: Refactoring workflow — test coverage gate, DRY + SOLID analysis, 
 
 # Refactor to Pattern
 
-Refactoring workflow: verify test coverage, analyze with DRY + SOLID principles, design decomposition and relationships, discover patterns from symptoms, write a chunked spec for interactive review, and execute with regression safety.
+Refactoring workflow: verify test coverage, analyze with DRY + SOLID principles, design decomposition and relationships, discover patterns from symptoms, write a chunked spec for user review, and execute with regression safety.
 
 ## When to Use
 
@@ -86,7 +86,20 @@ Any unit with 2+ distinct responsibilities is an SRP violation and a refactoring
 
 For every multi-responsibility unit identified in Step 1, **design** how to split it into focused, single-purpose units. Each resulting unit should have exactly one reason to change.
 
-The output is a decomposition plan — a list of new "building blocks," each doing one thing well, with clear names and responsibilities. Do not reorganize them yet, and do not modify code yet. Just design the split.
+The output is a decomposition plan — a list of new "building blocks." Read `layer-reference.md` for the architectural layer model, then define each building block with all four attributes:
+
+```
+Building Block              | Entity Kind       | Responsibility                  | Layer
+----------------------------|-------------------|---------------------------------|--------
+UserValidator               | struct            | Validate user input             | App
+UserRepository              | struct            | Persist/query user records      | Infra
+WelcomeEmailSender          | struct            | Send welcome emails             | Infra
+UserResponseFormatter       | standalone func   | Format user response            | Handler
+```
+
+Do not reorganize them yet, and do not modify code yet. Just design the split.
+
+**Hard constraint:** every building block MUST be a distinct code-level entity — a type (struct, class), a standalone function, or a module-level construct (e.g., a singleton via `sync.Once`). Splitting methods into separate files while keeping them on the same type is file organization, not decomposition. If you cannot point to the concrete language construct that owns the responsibility, the split is not concrete enough.
 
 ### Step 3: Analyze Relationships — Cohesion vs Decoupling
 
@@ -100,13 +113,9 @@ For every pair of related building blocks, decide:
 
 **Decoupling** — place in separate modules, define interfaces in each module, depend only on interfaces, inject concrete implementations at runtime. Choose this when:
 
-- They belong to **different architectural layers** (see Layer Reference below)
+- They belong to **different architectural layers** — same-layer pairs are cohesion candidates, cross-layer pairs default to decoupling
 - They represent **independent variation dimensions** — multiple orthogonal axes of change that must compose. Each axis gets its own interface; concrete implementations vary independently and combine through composition (e.g., a rendering system with independent Shape, Color, and Behavior axes — each is an interface, concrete combinations are assembled at runtime)
 - You need **polymorphism** — multiple implementations behind a single contract
-
-#### Layer Reference
-
-Read `layer-reference.md` for the full architectural layer model — dependency graph, layer constraints, directory layout, and infra anti-corruption boundary. Use it to classify building blocks by layer.
 
 ### Step 4: Discover Patterns from Symptoms
 
@@ -145,21 +154,67 @@ The difference: patterns **emerge** from well-decomposed code. They are names fo
 
 Read `step-5-spec.md` and follow it. Synthesize the analysis from Steps 1–4 into a chunked refactoring spec written to a file.
 
-### Step 6: Interactive Spec Review
+### Step 6: Spec Review
 
-Walk through the spec with the user **in dependency order** — chunks that are depended on by others come first. The user always reviews on a foundation of already-approved context.
+**CRITICAL GUARDRAIL — spec-only edits.** This entire step modifies _only_ the refactoring spec file. Do NOT touch production code, even if user feedback implies production changes are needed. If a user's feedback requires production code changes (e.g., "this interface name is wrong in the actual code"), capture the required change as a note in the spec — the actual code change happens during execution (Step 8), not here.
 
-1. Tell the user the spec file path
-2. Present **one chunk at a time** — show its scope, connections, and changes
-3. Ask the user for feedback on that chunk
-4. If the user gives feedback:
-   - Edit the relevant section in the spec file
-   - Show a brief summary of what changed
-   - Re-present the chunk for re-review
-5. Move to the next chunk after approval
-6. Final approval — confirm the complete spec is ready for execution
+#### Present the summary
+
+1. Confirm: **"Refactoring spec saved to `<path>`."**
+2. Show **only** these in the conversation:
+   - The Statistics table
+   - Any design decisions with trade-offs that need user input (pattern choice ambiguity, borderline cohesion/decoupling calls, etc.)
+
+#### Ask the user how they want to proceed
+
+Use `AskUserQuestion` with three options:
+
+1. **"Interactive review"** — Walk through the spec chunk by chunk together
+2. **"Self-review"** — I'll review the spec file on my own and come back with questions
+3. **"Looks good — proceed to execution"** — Skip review and start building the execution plan
+
+#### Option 1: Interactive review
+
+Walk through chunks **in dependency order** — chunks depended on by others come first. The user always reviews on a foundation of already-approved context.
+
+For each chunk:
+
+- Show its scope, dependencies, and changes (concise summary from the spec file, not the full section)
+- Collect feedback
+- **Edit the spec file** to reflect any changes (never edit production code)
+- Move to the next chunk after approval
+
+After all chunks are reviewed, show the updated Statistics table and confirm: **"All chunks reviewed and updated. Ready to proceed?"**
+
+#### Option 2: Self-review
+
+Tell the user: **"The full spec is saved to `<path>`. Take your time reviewing it — when you're ready, share any feedback or say 'proceed' to continue."**
+
+When the user returns with feedback:
+
+- **Read** only the relevant section from the spec file
+- **Edit** that section in the spec file (never edit production code)
+- Show a brief summary of what changed
+- Ask if there's more feedback or if they're ready to proceed
+
+#### Option 3: Looks good — proceed
+
+Skip review and move directly to the Quality Gate.
 
 **Key principle:** the file is the source of truth. The conversation holds summaries and diffs, never the full spec.
+
+#### Quality Gate
+
+Before proceeding to Step 7, **re-read the entire spec file from top to bottom** and verify:
+
+- [ ] Every design decision with trade-offs has a resolution (user chose a direction)
+- [ ] The spec is internally consistent (no chunks referencing non-existent interfaces, no dangling dependencies between chunks)
+- [ ] The scope is achievable (not trying to restructure the entire codebase in one pass)
+- [ ] **Post-edit coherence** — multi-round edits cause silent rot: a chunk's scope was narrowed but another chunk still references its old responsibility; an interface was renamed in one chunk but stale in cross-references; a dependency arrow was reversed but the "Depends on" field wasn't updated. Scan for any detail that was true before an edit but is now stale
+
+If the scope is too large, suggest phasing: "This is a large refactoring. Should we execute it in phases — e.g., extract core interfaces first, then migrate consumers?"
+
+After user approval, proceed to Step 7.
 
 ### Step 7: Execution Plan
 

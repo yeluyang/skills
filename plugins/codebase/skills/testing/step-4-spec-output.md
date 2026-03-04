@@ -147,11 +147,12 @@ Skip the interactive review and move directly to the Quality Gate (4.3).
 
 ## 4.3 Quality Gate
 
-Before proceeding, verify (by reading the spec file):
+Before proceeding, **re-read the entire spec file from top to bottom** and verify:
 
 - [ ] Every flagged decision has a resolution (user chose an option)
 - [ ] The spec is internally consistent (no tests referencing deleted functions, no gaps)
 - [ ] The scope is achievable (not trying to test everything in one pass for a huge codebase)
+- [ ] **Post-edit coherence** — multi-round edits cause silent rot: a test was removed from one area but still counted in the Statistics table; a function was renamed during review but an older test case still references the old name; a flagged decision was resolved but its implications weren't propagated to affected test entries. Scan for any detail that was true before an edit but is now stale
 
 If the scope is too large, suggest phasing: "This is a large test plan. Should we execute it in phases? Phase 1: leaf unit tests. Phase 2: mid-level. Phase 3: integration."
 
