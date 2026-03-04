@@ -88,21 +88,60 @@ Common flagged decisions:
 | **Net change**         | +N / -N |
 ```
 
-## 4.2 Present Summary and Iterate on File
+## 4.2 Present Summary and Review
 
-The full spec lives in the file. In the conversation, only show a compact summary:
+The full spec lives in the file. In the conversation, only show a compact summary.
 
-1. Tell the user the spec file path
+**CRITICAL GUARDRAIL — spec-only edits.** This entire step modifies *only* the testing spec file. Do NOT touch production code, even if user feedback implies production changes are needed. If a user's feedback requires production code changes (e.g., "this function signature is wrong"), capture the required change as a note in the spec — the actual code change happens during execution (Step 5+), not here.
+
+### Save and present the summary
+
+1. Write the spec file (from 4.1) and confirm: **"Testing spec saved to `<path>`."**
 2. Show **only** these in the conversation:
    - The Statistics table (Section 5)
    - Flagged Decisions (Section 4) — these require user input
-3. Ask: **"The full spec is saved to `<path>`. Above are the stats and decisions that need your input. Any areas you want to adjust — add tests, remove tests, change priorities, or resolve the flagged decisions?"**
-4. If the user has feedback:
-   - **Read** only the relevant section from the file
-   - **Edit** that section in the file
-   - Show the user a brief summary of what changed (not the full section)
-   - Ask again until approved
-5. When approved, proceed to Step 5
+
+### Ask the user how they want to proceed
+
+Use `AskUserQuestion` with three options:
+
+1. **"Interactive review"** — Walk through the spec section by section together
+2. **"Self-review"** — I'll review the spec file on my own and come back with questions
+3. **"Looks good — proceed to execution"** — Skip review and start implementing the test plan
+
+#### Option 1: Interactive review
+
+Walk through the spec in this order, one category at a time:
+
+1. **Tests to delete** — show the list, ask for confirmation or adjustments
+2. **Tests to keep as-is** — show the list, ask if any should be modified or removed
+3. **Tests to modify** — show each modification, ask for confirmation
+4. **New tests to write** — show the list, ask if any should be added, removed, or reprioritized
+5. **Flagged decisions** — present each decision, collect the user's choice
+
+For each category:
+
+- Show a concise summary from the spec file (not the full section — pull key items)
+- Collect feedback
+- **Edit the spec file** to reflect any changes (never edit production code)
+- Move to the next category
+
+After all categories are reviewed, show the updated Statistics table and confirm: **"All sections reviewed and updated. Ready to proceed?"**
+
+#### Option 2: Self-review
+
+Tell the user: **"The full spec is saved to `<path>`. Take your time reviewing it — when you're ready, share any feedback or say 'proceed' to continue."**
+
+When the user returns with feedback:
+
+- **Read** only the relevant section from the spec file
+- **Edit** that section in the spec file (never edit production code)
+- Show a brief summary of what changed
+- Ask if there's more feedback or if they're ready to proceed
+
+#### Option 3: Looks good — proceed
+
+Skip the interactive review and move directly to the Quality Gate (4.3).
 
 **Key principle:** the file is the source of truth. The conversation holds summaries and diffs, never the full spec.
 
