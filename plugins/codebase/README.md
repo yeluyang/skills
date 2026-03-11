@@ -19,13 +19,15 @@ Codebase understanding, documentation, refactoring, and testing toolkit — proj
   5. API Surface
   6. Deep Dive
   7. Quick Reference Card
-- **`refactor-to-pattern`** (`/codebase:refactor-to-pattern`) — Guides a 4-step refactoring process: annotate responsibilities, decompose by SRP, analyze cohesion vs decoupling, discover patterns from symptoms
+- **`refactor-to-pattern`** (`/codebase:refactor-to-pattern`) — Refactoring workflow: test coverage gate, responsibility analysis, SRP decomposition, cohesion vs decoupling, pattern discovery, spec-driven user review, and execution planning
 - **`testing`** (`/codebase:testing`) — Analyze codebase to design and implement comprehensive test coverage — top-down code analysis, bottom-up test design, edge case focus, existing test audit, and agent team execution
   1. Code Analysis (top-down call chain tracing)
   2. Test Design (bottom-up from leaf functions)
   3. Existing Test Audit (keep/modify/delete)
   4. Spec Output & User Review
   5. Plan & Execute (agent team parallelism)
+  6. Coverage Verification (fresh-subagent gap detection loop)
+  7. Test Consolidation (reduce redundancy without losing coverage)
 
 ## Installation
 

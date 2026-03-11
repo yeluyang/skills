@@ -31,13 +31,15 @@ The skill adapts to what the user provides:
 After completing each step, output a progress table:
 
 ```markdown
-| Step                   | Status    |
-| ---------------------- | --------- |
-| 1. Code Analysis       | done      |
-| 2. Test Design         | ▶ current |
-| 3. Existing Test Audit | —         |
-| 4. Spec & Review       | —         |
-| 5. Plan & Execute      | —         |
+| Step                     | Status    |
+| ------------------------ | --------- |
+| 1. Code Analysis         | done      |
+| 2. Test Design           | ▶ current |
+| 3. Existing Test Audit   | —         |
+| 4. Spec & Review         | —         |
+| 5. Plan & Execute        | —         |
+| 6. Coverage Verification | —         |
+| 7. Test Consolidation    | —         |
 ```
 
 Update this table at the end of every step.
@@ -46,14 +48,16 @@ Update this table at the end of every step.
 
 Execute steps in order. Each step is documented in its own file — **read the step file before executing that step**.
 
-| Step | File                         | Goal                                                             |
-| ---- | ---------------------------- | ---------------------------------------------------------------- |
-| 0    | _(this file)_                | Detect scope, invoke `/codebase:type`, route to steps            |
-| 1    | `step-1-code-analysis.md`    | Top-down: trace call chains, identify leaf functions, categorize |
-| 2    | `step-2-test-design.md`      | Bottom-up: design tests from leaves upward, edge cases, flags    |
-| 3    | `step-3-existing-audit.md`   | Audit existing tests: keep, modify, delete, identify gaps        |
-| 4    | `step-4-spec-output.md`      | Synthesize testing spec, present to user, iterate until approved |
-| 5    | `step-5-plan-and-execute.md` | Save plan, decompose into tasks, launch agent teams              |
+| Step | File                           | Goal                                                                |
+| ---- | ------------------------------ | ------------------------------------------------------------------- |
+| 0    | _(this file)_                  | Detect scope, invoke `/codebase:type`, route to steps               |
+| 1    | `step-1-code-analysis.md`      | Top-down: trace call chains, identify leaf functions, categorize    |
+| 2    | `step-2-test-design.md`        | Bottom-up: design tests from leaves upward, edge cases, flags       |
+| 3    | `step-3-existing-audit.md`     | Audit existing tests: keep, modify, delete, identify gaps           |
+| 4    | `step-4-spec-output.md`        | Synthesize testing spec, present to user, iterate until approved    |
+| 5    | `step-5-plan-and-execute.md`   | Save plan, decompose into tasks, launch agent teams                 |
+| 6    | `step-6-verification-loop.md`  | Re-analyze with fresh subagents, find missed gaps, loop until clean |
+| 7    | `step-7-test-consolidation.md` | Reduce redundancy and structural bloat without losing coverage      |
 
 ### Step 0: Scope Detection & Project Type
 

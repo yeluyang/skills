@@ -83,4 +83,4 @@ When all tasks are completed:
 
 1. Run the full test suite to verify no conflicts between test files
 2. Report final statistics: tests added, modified, deleted, total coverage change
-3. Update the progress table — all steps done
+3. Update the progress table and proceed to Step 6

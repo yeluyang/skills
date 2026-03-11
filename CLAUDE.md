@@ -27,6 +27,8 @@ Complex skills can include supplementary Markdown files alongside `SKILL.md` in 
 - Each plugin has its own `plugin.json` with `name`, `version`, `description`, `author`, `repository`, `license`
 - Skills use YAML frontmatter (`name`, `description`) followed by Markdown prompt body
 - Commands use YAML frontmatter (`description`) followed by Markdown prompt body
+- Auxiliary/step files have no YAML frontmatter — they start directly with a `# Title` heading
+- Step files follow the naming pattern `step-N-<description>.md` (e.g., `step-1-code-analysis.md`); non-sequential auxiliary files use descriptive kebab-case (e.g., `layer-reference.md`)
 - Skills are triggered by user intent detection; commands are explicit slash commands (`/codebase:type`)
 - Versioning is semver (`0.1.0`)
 - **Skill dependency rules** — when a skill (`SKILL.md`) decomposes into sub-files (`step-*.md`, `part-*.md`, etc.):
@@ -35,6 +37,12 @@ Complex skills can include supplementary Markdown files alongside `SKILL.md` in 
   - Data flows through the parent: parent executes child A, receives output, passes it to child B
   - If a sub-file needs material from a sibling, that coupling is wrong — extract the dependent part into its own sub-file and let the parent orchestrate the ordering
 - **Commands must not block when invoked by skills** — commands (e.g., `/codebase:type`) may be called by skills as sub-steps; avoid prompts like "confirm with user before proceeding" that stall automated workflows
+- **Goals over techniques** — skill prompts should describe _what to detect_ (the pattern, smell, or goal) and _what outcome to achieve_, not _which specific technique to apply_. When listing examples, make clear they are illustrative ("such as", "e.g."), not exhaustive. Let the agent choose the best approach for the target project's language, framework, and conventions. If a user reports that a skill prompt is too restrictive, extract the underlying principle from their feedback and generalize — don't just patch the specific example they gave.
+- **Anti-rot discipline** — after any structural change to a skill (adding/removing/renumbering steps, renaming concepts), audit for stale references:
+  - Cross-skill references (other skills that invoke or reference this skill's steps)
+  - README step lists and descriptions
+  - Sibling step files' flow instructions ("proceed to Step N")
+  - Prefer future-proof references ("the remaining steps", "the steps beyond Step 3") over hardcoded step numbers in cross-skill references — a skill's internal step numbers are an implementation detail that external consumers should not depend on
 
 ## How to Add
 

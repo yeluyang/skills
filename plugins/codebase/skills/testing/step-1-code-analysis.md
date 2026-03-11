@@ -44,13 +44,13 @@ Build the call tree. Note the depth of each function from its entry point.
 
 Tag every function in the call tree with its category:
 
-| Category       | Description                                           | Testing Implication                              |
-| -------------- | ----------------------------------------------------- | ------------------------------------------------ |
-| `pure`         | No side effects, deterministic output for given input | Easiest to test — table-driven tests, no mocking |
-| `io`           | Performs file, network, or database operations        | Needs mocking or test fixtures                   |
-| `state`        | Mutates shared/global state                           | Needs careful setup/teardown isolation           |
-| `orchestrator` | Mainly coordinates other functions, minimal own logic | Test the coordination, mock children             |
-| `adapter`      | Wraps external APIs or SDKs, translates data formats  | Mock the external API, test the translation      |
+| Category       | Description                                           | Testing Implication                                |
+| -------------- | ----------------------------------------------------- | -------------------------------------------------- |
+| `pure`         | No side effects, deterministic output for given input | Easiest to test — deterministic, no dependencies   |
+| `io`           | Performs file, network, or database operations        | Needs mocking or test fixtures                     |
+| `state`        | Mutates shared/global state                           | Needs careful setup/teardown isolation             |
+| `orchestrator` | Mainly coordinates other functions, minimal own logic | Test the coordination logic, isolate from children |
+| `adapter`      | Wraps external APIs or SDKs, translates data formats  | Isolate from external system, test the translation |
 
 A function may have multiple categories (e.g., `io` + `adapter`). Note all that apply.
 

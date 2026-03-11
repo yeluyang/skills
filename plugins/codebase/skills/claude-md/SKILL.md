@@ -41,7 +41,7 @@ After completing each step, output a progress table:
 ## Guiding Principles
 
 - **Agent-first perspective** — Every sentence answers: "would this help an AI agent write correct, consistent code here?" If not, cut it.
-- **Concrete over abstract** — Specific file paths, actual command strings, real code patterns. `pytest -x tests/unit/` beats "run the test suite".
+- **Concrete over abstract** — When generating new content, prefer specific file paths, actual command strings, real code patterns. `pytest -x tests/unit/` beats "run the test suite". This principle governs generation quality, not preservation decisions — existing abstract content that is still true and guiding should be kept (see Step 3 durability assessment).
 - **Stable knowledge floats up** — Order the document so an agent hitting context limits still gets the most durable, high-value knowledge first.
 - **Don't duplicate the code** — Capture _why_ and _how to navigate_, not _what the code does line by line_. If something is obvious from reading the code, don't repeat it.
 - **Patterns over inventory** — Describe _how the project is organized_ (the pattern), not _what files currently exist_ (the inventory). An agent can `ls` and `glob`; it cannot infer naming conventions, organizational rules, or where to put new code. A file tree enumerating every file becomes stale on the next commit. A description of the organizational pattern stays valid across many changes.
@@ -57,10 +57,8 @@ After completing each step, output a progress table:
 
 Search the project root for `CLAUDE.md` (case-sensitive). Also check for common variants: `claude.md`, `.claude/CLAUDE.md`.
 
-- **Found** → Tentatively update mode. Read the existing CLAUDE.md in full and hold it in memory for diffing in Step 4.
+- **Found** → Update mode. Read the existing CLAUDE.md in full and hold it for durability assessment in Step 3.
 - **Not found** → Bootstrap mode.
-
-**Divergence check (update mode only):** After reading the existing CLAUDE.md, assess whether its structure and content are close enough to what this skill would generate. If the existing document is structurally divergent — organized around different sections, contains mostly stale or irrelevant content, or would require rewriting most sections — switch to Bootstrap mode and regenerate fully. Do not waste effort on incremental diffs against a fundamentally different document. Log the decision: `"Existing CLAUDE.md diverges significantly from analysis findings. Switching to Bootstrap mode."`
 
 ### 1.2 Scope: One Git Repo = One CLAUDE.md
 
@@ -215,9 +213,21 @@ Include only if analysis found relevant material:
 | **Deployment**            | Dockerfile, k8s, terraform, CI/CD | How to deploy, environments, infrastructure        |
 | **Key Request Paths**     | Critical flows traced in Layer 4  | Step-by-step narrative of representative flows     |
 
+### Durability Assessment (update mode only)
+
+Now that the codebase has been analyzed (Step 2), compare each piece of existing CLAUDE.md content against the analysis findings. Evaluate by a single criterion — **is this content still accurate and does it still guide agents effectively in the current codebase?**
+
+Classify each piece of existing content as:
+
+- **Durable** — content that remains true and continues to guide the project. Keep it regardless of who wrote it or how it got there. Examples: architectural principles still followed, naming conventions still practiced, workflow rules still relevant, philosophical guidance still applicable.
+- **Stale** — content that has rotted: facts that are now wrong, conventions the codebase no longer follows, references to removed files or commands, instructions that would mislead an agent. Remove it and regenerate correct content regardless of who originally wrote it.
+- **Uncertain** — content whose accuracy can't be confidently assessed from codebase analysis alone. Flag it for the user in Step 4 rather than silently dropping it.
+
+This assessment applies uniformly. Hand-written principles can rot (the project evolved past them). Auto-generated architecture descriptions can be durable (they're still accurate). The origin doesn't matter; the current truth does.
+
 ### Self-Evaluation Gate
 
-Before presenting to the user, critically evaluate every section you just generated. For each section, ask three questions:
+Before presenting to the user, critically evaluate every section — both newly generated content and existing durable content carried forward.
 
 1. **Volatility** — Will this rot within a few commits? Content that references specific file names, line counts, or current-state inventories rots fast. Content that describes patterns, conventions, and architectural decisions stays valid across many changes. If a section is mostly volatile facts, either rewrite it as stable patterns or cut it.
 
@@ -234,7 +244,7 @@ Before presenting to the user, critically evaluate every section you just genera
 
 This gate is not optional. A shorter CLAUDE.md that is 90% stable knowledge beats a longer one that is 50% stale inventory.
 
-All surviving sections feed into Step 4.
+All surviving sections (generated + durable existing) feed into Step 4.
 
 ---
 
@@ -242,10 +252,24 @@ All surviving sections feed into Step 4.
 
 **Goal:** Assemble and write the final CLAUDE.md.
 
+### Bootstrap Mode
+
 1. Start with a top-level heading: `# CLAUDE.md`
 2. Add sections in order (stable → volatile → optional)
 3. Consistent formatting: one blank line between sections, `##` for top sections, `###` for subsections
-4. Write to `CLAUDE.md` at the project root — overwrite if it already exists
+4. Write to `CLAUDE.md` at the project root
+
+### Update Mode
+
+1. Assemble the new CLAUDE.md: generated sections + durable existing content (both from Step 3)
+2. Place durable existing content in its most natural section. Preserve its original location when possible.
+3. **Diff against the existing CLAUDE.md.** Present changes to the user as:
+   - **Added** — new content from fresh analysis
+   - **Modified** — existing content updated to reflect current state
+   - **Removed** — existing content assessed as stale (with reason: what changed)
+   - **Preserved** — existing durable content carried forward
+   - **Uncertain** — existing content whose durability couldn't be confidently assessed; requires user decision
+4. Write after user confirms
 
 ### Post-Write
 
@@ -254,6 +278,8 @@ Output a brief summary of what was written:
 ```
 CLAUDE.md written with N sections:
 - Overview, Architecture, Conventions, ...
+Preserved from existing: <list, or "none">
+Removed as stale: <list with reasons, or "none">
 Skipped: <any skipped sections, or "none">
 ```
 
