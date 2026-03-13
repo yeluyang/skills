@@ -1,8 +1,8 @@
 # Step 7: Test Consolidation
 
-**Goal:** Review all tests (especially newly written ones) for redundancy and structural bloat. Consolidate aggressively — but never at the cost of coverage.
+**Goal:** Review all tests in the target scope for redundancy and structural bloat. Consolidate aggressively — but never at the cost of coverage.
 
-**Why this step exists:** Multi-round test writing naturally produces duplication. Different rounds may cover the same scenario from slightly different angles, use different setup patterns for similar flows, or add tests that are strict subsets of others. Consolidation reduces maintenance burden without losing the coverage gains.
+**Why this step exists:** Tests accumulate over time from many sources — different authors, agents, sessions, or rounds of work — and redundancy creeps in naturally. It can exist between newly written tests, between pre-existing tests, or across the two groups. All three categories must be checked. Consolidation reduces maintenance burden without losing the coverage gains.
 
 ## 7.1 Identify Consolidation Opportunities
 
