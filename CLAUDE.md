@@ -2,21 +2,22 @@
 
 ## Overview
 
-Personal Claude Code plugin marketplace. Hosts plugins (skills, commands, hooks, agents) that can be installed into Claude Code via `/plugin marketplace add yeluyang/skills`. The repo is content-only — no build steps, no runtime code, just structured Markdown and JSON metadata.
+Personal plugin marketplace for Claude Code plus Codex-compatible plugin payloads. The repo stores shared plugin content once, keeps Claude Code marketplace metadata in-repo, and expects Codex to consume the plugins through each machine's personal marketplace. The repo remains content-only — no build steps, no runtime code, just structured Markdown and JSON metadata.
 
 ## Architecture
 
-```
-.claude-plugin/marketplace.json   ← Registry: lists all plugins with name, version, source path
+```text
+.claude-plugin/marketplace.json   ← Claude Code registry: plugin name, version, source path
 plugins/<name>/                   ← One directory per plugin
-  .claude-plugin/plugin.json      ← Plugin metadata (name, version, author, license)
-  skills/<skill>/SKILL.md         ← Skill definitions (frontmatter + prompt)
+  .claude-plugin/plugin.json      ← Claude Code plugin metadata
+  .codex-plugin/plugin.json       ← Codex plugin metadata + UI interface fields
+  skills/<skill>/SKILL.md         ← Shared skill definitions (frontmatter + prompt)
   skills/<skill>/<aux>.md         ← Optional supplementary files (step guides, references)
-  commands/<command>.md            ← Slash commands (frontmatter + prompt)
+  commands/<command>.md           ← Shared slash commands (frontmatter + prompt)
   README.md                       ← Human-facing docs for the plugin
 ```
 
-Plugins are self-contained — each `plugins/<name>/` directory holds everything Claude Code needs to load that plugin. The root `marketplace.json` is the index that ties them together.
+Plugins are self-contained — each `plugins/<name>/` directory holds the shared payload. Claude Code installs from the repo-local marketplace. Codex personal marketplace entries point directly at these plugin directories from `~/.agents/plugins/marketplace.json`.
 
 Complex skills can include supplementary Markdown files alongside `SKILL.md` in the same directory (e.g., `walkthrough` has step-1 through step-7 guides that the main skill references).
 
@@ -24,19 +25,24 @@ Complex skills can include supplementary Markdown files alongside `SKILL.md` in 
 
 - Plugin directories use kebab-case: `plugins/codebase/`
 - Skill directories match the skill name: skill `claude-md` lives in `skills/claude-md/SKILL.md`
-- Each plugin has its own `plugin.json` with `name`, `version`, `description`, `author`, `repository`, `license`
+- Each plugin has both:
+  `.claude-plugin/plugin.json`
+  `.codex-plugin/plugin.json`
+- Keep shared manifest fields aligned across both products: `name`, `version`, `description`, `author`, `repository`, `license`
 - Skills use YAML frontmatter (`name`, `description`) followed by Markdown prompt body
 - Commands use YAML frontmatter (`description`) followed by Markdown prompt body
 - Auxiliary/step files have no YAML frontmatter — they start directly with a `# Title` heading
 - Step files follow the naming pattern `step-N-<description>.md` (e.g., `step-1-code-analysis.md`); non-sequential auxiliary files use descriptive kebab-case (e.g., `layer-reference.md`)
-- Skills are triggered by user intent detection; commands are explicit slash commands (`/codebase:type`)
+- Skills are triggered by user intent detection and may explicitly invoke other skills using the `$skill-name` form (e.g., `$type`, `$testing`)
+- Root Claude marketplace file is required: `.claude-plugin/marketplace.json`
+- Codex personal marketplace is out-of-repo and machine-local: `~/.agents/plugins/marketplace.json`
 - Versioning is semver (`0.1.0`)
 - **Skill dependency rules** — when a skill (`SKILL.md`) decomposes into sub-files (`step-*.md`, `part-*.md`, etc.):
   - Dependencies flow **parent → child only**; sub-files must never reference the parent `SKILL.md`
   - Sibling sub-files must not reference each other directly
   - Data flows through the parent: parent executes child A, receives output, passes it to child B
   - If a sub-file needs material from a sibling, that coupling is wrong — extract the dependent part into its own sub-file and let the parent orchestrate the ordering
-- **Commands must not block when invoked by skills** — commands (e.g., `/codebase:type`) may be called by skills as sub-steps; avoid prompts like "confirm with user before proceeding" that stall automated workflows
+- **Referenced sub-skills must not block** — when a skill invokes another skill (e.g., `$type`, `$testing`) as a sub-step, avoid prompts like "confirm with user before proceeding" that stall automated workflows
 - **Goals over techniques** — skill prompts should describe _what to detect_ (the pattern, smell, or goal) and _what outcome to achieve_, not _which specific technique to apply_. When listing examples, make clear they are illustrative ("such as", "e.g."), not exhaustive. Let the agent choose the best approach for the target project's language, framework, and conventions. If a user reports that a skill prompt is too restrictive, extract the underlying principle from their feedback and generalize — don't just patch the specific example they gave.
 - **Anti-rot discipline** — after any structural change to a skill (adding/removing/renumbering steps, renaming concepts), audit for stale references:
   - Cross-skill references (other skills that invoke or reference this skill's steps)
@@ -49,24 +55,29 @@ Complex skills can include supplementary Markdown files alongside `SKILL.md` in 
 **To add a new plugin:**
 
 1. Create `plugins/<plugin-name>/` directory
-2. Create `.claude-plugin/plugin.json` with metadata (`name`, `version`, `description`, `author`, `repository`, `license`)
+2. Create both plugin manifests with aligned core metadata:
+   - `.claude-plugin/plugin.json`
+   - `.codex-plugin/plugin.json`
 3. Add components as needed:
    - `skills/<skill-name>/SKILL.md` — skill with YAML frontmatter and Markdown body
    - `skills/<skill-name>/<aux>.md` — optional supplementary files for complex skills
    - `commands/<command-name>.md` — slash command with YAML frontmatter and Markdown body
    - `hooks/`, `agents/`, `.mcp.json` — as required
 4. Create `README.md` documenting the plugin's components and usage
-5. Register in root `.claude-plugin/marketplace.json` — add entry to `plugins` array with `name`, `description`, `version`, `source` (relative path to plugin dir), `author`
+5. Register the plugin in:
+   - `.claude-plugin/marketplace.json` for Claude Code
+   - `~/.agents/plugins/marketplace.json` on each machine that should use it in Codex
 6. Commit, push, tag a release
 
 ## Updating Skills
 
 When modifying any skill (`SKILL.md`), command, or other plugin content:
 
-1. **Bump the plugin version** — update `version` in both:
+1. **Bump the plugin version** — update `version` in all versioned plugin metadata:
    - `plugins/<name>/.claude-plugin/plugin.json`
+   - `plugins/<name>/.codex-plugin/plugin.json`
    - `.claude-plugin/marketplace.json` (the corresponding entry)
-2. **Keep versions in sync** — both files must show the same version for the plugin.
+2. **Keep versions in sync** — all versioned plugin metadata must show the same version for the plugin.
 3. **Use semver**:
    - Patch (`0.1.2` → `0.1.3`): wording tweaks, clarifications, minor prompt adjustments
    - Minor (`0.1.3` → `0.2.0`): new skill/command added, significant workflow changes, new sections
@@ -76,4 +87,4 @@ This is easy to forget — **treat the version bump as part of the edit, not a s
 
 ## Commands
 
-No build, test, or lint steps — this is a content-only repository. Validate by inspecting JSON/Markdown structure manually or by installing into Claude Code and testing.
+No build, test, or lint steps — this is a content-only repository. Validate by inspecting JSON/Markdown structure manually or by installing into Claude Code and Codex and testing.

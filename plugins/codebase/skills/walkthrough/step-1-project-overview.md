@@ -4,7 +4,7 @@
 
 ## 1.1 Detect Project Type
 
-Invoke `/codebase:type` to detect project type, primary languages, frameworks, and package managers.
+Invoke the skill: `$type` to detect project type, primary languages, frameworks, and package managers.
 
 ## 1.2 Identify Entry Points
 

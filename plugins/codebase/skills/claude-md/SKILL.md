@@ -1,5 +1,5 @@
 ---
-name: codebase:claude-md
+name: claude-md
 description: Generate or update CLAUDE.md — deep-analyze a codebase to extract stable knowledge (architecture, conventions, design philosophy) and volatile operational details (build, test, deploy commands) into agent-optimized project documentation
 ---
 
@@ -70,7 +70,7 @@ The unit of work is a single version-controlled project (`.git/` boundary). Rule
 
 ### 1.3 Detect Project Type & Identify Languages
 
-Invoke `/codebase:type` to detect project type, primary languages, frameworks, and package managers.
+Invoke the skill: `$type` to detect project type, primary languages, frameworks, and package managers.
 
 ### 1.4 Output
 

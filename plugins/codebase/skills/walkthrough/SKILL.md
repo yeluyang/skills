@@ -1,5 +1,5 @@
 ---
-name: codebase:walkthrough
+name: walkthrough
 description: Guided codebase understanding — detect project type, map dependencies and external systems, extract core concepts, enumerate API surfaces, and deep-dive into request paths interactively
 ---
 

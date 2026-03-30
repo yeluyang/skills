@@ -1,0 +1,31 @@
+{
+  "name": "codebase",
+  "version": "0.6.0",
+  "description": "Codebase understanding, documentation, refactoring, and testing toolkit — project type detection, guided walkthrough, CLAUDE.md generation, pattern-based refactoring, and comprehensive test coverage analysis",
+  "author": {
+    "name": "yeluyang",
+    "url": "https://github.com/yeluyang"
+  },
+  "homepage": "https://github.com/yeluyang/skills",
+  "repository": "https://github.com/yeluyang/skills",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Codebase",
+    "shortDescription": "Understand, document, refactor, and test codebases",
+    "longDescription": "Use Codebase to detect project type, walk an unfamiliar repository, generate or refresh CLAUDE.md, plan pattern-driven refactors, and analyze or expand test coverage.",
+    "developerName": "yeluyang",
+    "category": "Coding",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/yeluyang/skills",
+    "defaultPrompt": [
+      "Audit this repo and tell me what kind of project it is.",
+      "Walk me through this codebase and generate a quick reference.",
+      "Plan a refactor and identify the test gaps before coding."
+    ]
+  }
+}

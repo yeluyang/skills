@@ -2,16 +2,15 @@
 
 Codebase understanding, documentation, refactoring, and testing toolkit — project type detection, guided walkthrough, CLAUDE.md generation, pattern-based refactoring, and comprehensive test coverage analysis.
 
+This plugin ships one shared `skills/` payload, with separate plugin metadata for Claude Code and Codex.
+
 ## Components
-
-### Commands
-
-- **`type`** (`/codebase:type`) — Detect project type, primary languages, frameworks, and package managers by examining build files, manifests, entry points, and directory structure
 
 ### Skills
 
-- **`claude-md`** (`/codebase:claude-md`) — Deep-analyze a codebase and generate or update CLAUDE.md with agent-optimized project documentation. Uses `/codebase:type` for project detection.
-- **`walkthrough`** (`/codebase:walkthrough`) — Structured 7-step interactive workflow for understanding an unfamiliar codebase, with adaptive routing based on project type. Uses `/codebase:type` for project detection.
+- **`type`** (`$type` in Codex, `/codebase:type` in Claude Code) — Detect project type, primary languages, frameworks, and package managers by examining build files, manifests, entry points, and directory structure
+- **`claude-md`** (`$claude-md` in Codex, `/codebase:claude-md` in Claude Code) — Deep-analyze a codebase and generate or update CLAUDE.md with agent-optimized project documentation. Uses the skill: `$type` for project detection.
+- **`walkthrough`** (`$walkthrough` in Codex, `/codebase:walkthrough` in Claude Code) — Structured 7-step interactive workflow for understanding an unfamiliar codebase, with adaptive routing based on project type. Uses the skill: `$type` for project detection.
   1. Project Overview
   2. Dependencies
   3. Build & Test
@@ -19,8 +18,8 @@ Codebase understanding, documentation, refactoring, and testing toolkit — proj
   5. API Surface
   6. Deep Dive
   7. Quick Reference Card
-- **`refactor-to-pattern`** (`/codebase:refactor-to-pattern`) — Refactoring workflow: test coverage gate, responsibility analysis, SRP decomposition, cohesion vs decoupling, pattern discovery, spec-driven user review, and execution planning
-- **`testing`** (`/codebase:testing`) — Analyze codebase to design and implement comprehensive test coverage — top-down code analysis, bottom-up test design, edge case focus, existing test audit, and agent team execution
+- **`refactor-to-pattern`** (`$refactor-to-pattern` in Codex, `/codebase:refactor-to-pattern` in Claude Code) — Refactoring workflow: test coverage gate, responsibility analysis, SRP decomposition, cohesion vs decoupling, pattern discovery, spec-driven user review, and execution planning
+- **`testing`** (`$testing` in Codex, `/codebase:testing` in Claude Code) — Analyze codebase to design and implement comprehensive test coverage — top-down code analysis, bottom-up test design, edge case focus, existing test audit, and agent team execution
   1. Code Analysis (top-down call chain tracing)
   2. Test Design (bottom-up from leaf functions)
   3. Existing Test Audit (keep/modify/delete)
@@ -31,17 +30,48 @@ Codebase understanding, documentation, refactoring, and testing toolkit — proj
 
 ## Installation
 
-```
+### Claude Code
+
+```text
 /plugin marketplace add yeluyang/skills
 /plugin install codebase@yeluyang-skills
 ```
 
 Then restart Claude Code.
 
+### Codex
+
+To make this plugin available from any working directory, clone the repo to a stable path such as `~/src/github.com/yeluyang/skills`, then register it from `~/.agents/plugins/marketplace.json` with:
+
+```json
+{
+  "name": "yeluyang-skills",
+  "interface": {
+    "displayName": "yeluyang skills"
+  },
+  "plugins": [
+    {
+      "name": "codebase",
+      "source": {
+        "source": "local",
+        "path": "./src/github.com/yeluyang/skills/plugins/codebase"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Coding"
+    }
+  ]
+}
+```
+
+This lets Codex discover `codebase` from any project on that machine without copying the plugin out of the repo.
+
 ## Usage
 
-- **Detect project type:** invoke `/codebase:type` or ask Claude to identify what kind of project this is
-- **Generate CLAUDE.md:** invoke `/codebase:claude-md` or ask Claude to generate project documentation for a new codebase
-- **Explore a codebase:** invoke `/codebase:walkthrough` when onboarding to an unfamiliar project
-- **Refactor code:** invoke `/codebase:refactor-to-pattern` after finishing an implementation that needs architectural review
-- **Add test coverage:** invoke `/codebase:testing` to analyze code and design comprehensive tests with edge case focus
+- **Detect project type:** invoke the skill: `$type` in Codex, or `/codebase:type` in Claude Code
+- **Generate CLAUDE.md:** invoke the skill: `$claude-md` in Codex, or `/codebase:claude-md` in Claude Code
+- **Explore a codebase:** invoke the skill: `$walkthrough` in Codex, or `/codebase:walkthrough` in Claude Code
+- **Refactor code:** invoke the skill: `$refactor-to-pattern` in Codex, or `/codebase:refactor-to-pattern` in Claude Code
+- **Add test coverage:** invoke the skill: `$testing` in Codex, or `/codebase:testing` in Claude Code

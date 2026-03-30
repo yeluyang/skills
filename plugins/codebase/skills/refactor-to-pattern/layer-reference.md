@@ -1,6 +1,6 @@
 # Layer Reference
 
-> **Note:** First run `/codebase:type` to detect the project type, languages, and frameworks. The layer reference below represents the most complex scenario (e.g., large network services, monorepos). Not every project needs all these layers. Map your building blocks to whichever layers are **actually present** in the codebase — if the project has no IDL, no infrastructure adapters, or no separate domain layer, skip them. Do not introduce layers that the codebase does not need.
+> **Note:** First invoke the skill: `$type` to detect the project type, languages, and frameworks. The layer reference below represents the most complex scenario (e.g., large network services, monorepos). Not every project needs all these layers. Map your building blocks to whichever layers are **actually present** in the codebase — if the project has no IDL, no infrastructure adapters, or no separate domain layer, skip them. Do not introduce layers that the codebase does not need.
 
 **Dependency graph — an edge A → B means "A may import B":**
 

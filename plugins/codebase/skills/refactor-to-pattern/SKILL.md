@@ -1,5 +1,5 @@
 ---
-name: codebase:refactor-to-pattern
+name: refactor-to-pattern
 description: Refactoring workflow — test coverage gate, DRY + SOLID analysis, SRP decomposition, pattern discovery, spec-driven user review, and execution planning
 ---
 
@@ -46,8 +46,8 @@ Steps with a file reference are documented in separate files — **read the file
 
 Refactoring without tests is flying blind — tests are the safety net that ensures behavior is preserved through structural changes. Before touching any code, verify the refactoring target has adequate coverage.
 
-1. **Invoke `codebase:testing`** on the same scope the user specified for refactoring (whole repo, directory, file, or function)
-2. **Execute through Step 3** of the testing skill (Code Analysis → Test Design → Existing Test Audit). Stop after the Step 3 audit report — do not proceed to the remaining steps
+1. **Invoke the skill: `$testing`** on the same scope the user specified for refactoring (whole repo, directory, file, or function)
+2. **Execute through Step 3** of the skill: `$testing` (Code Analysis → Test Design → Existing Test Audit). Stop after the Step 3 audit report — do not proceed to the remaining steps
 3. **Evaluate the audit** using the gap analysis from the Step 3 output:
 
 **Gate passes — proceed to Step 1** when:
@@ -64,9 +64,9 @@ Refactoring without tests is flying blind — tests are the safety net that ensu
 When the gate fails:
 
 - Present the gap analysis to the user
-- Recommend completing the full `codebase:testing` workflow (the remaining steps beyond Step 3) to close the gaps first
+- Recommend completing the full skill workflow: `$testing` (the remaining steps beyond Step 3) to close the gaps first
 - Explain: refactoring without tests risks silent regressions that go undetected until production
-- The user can re-invoke `codebase:refactor-to-pattern` after test coverage is adequate
+- The user can re-invoke the skill: `$refactor-to-pattern` after test coverage is adequate
 
 ### Step 1: Analyze Responsibilities
 
