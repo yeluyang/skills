@@ -1,0 +1,4 @@
+interface:
+  display_name: "Git Commit"
+  short_description: "Generate and create reviewed commits"
+  default_prompt: "Use $git:commit to prepare the right staged changes, draft a reviewed commit message via $git:message, and create the commit non-interactively."

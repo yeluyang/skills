@@ -1,0 +1,31 @@
+{
+  "name": "git",
+  "version": "0.1.0",
+  "description": "Git workflows and repository operations toolkit",
+  "author": {
+    "name": "yeluyang",
+    "url": "https://github.com/yeluyang"
+  },
+  "homepage": "https://github.com/yeluyang/skills",
+  "repository": "https://github.com/yeluyang/skills",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Git",
+    "shortDescription": "Inspect and manage Git repositories",
+    "longDescription": "Use Git to inspect repository state, explain changes, review history, and support common Git workflows through shared skills.",
+    "developerName": "yeluyang",
+    "category": "Coding",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/yeluyang/skills",
+    "defaultPrompt": [
+      "Explain this repo's current Git status and working tree changes.",
+      "Review the branch history and summarize what changed.",
+      "Help me choose the safest Git workflow for the task I need to do."
+    ]
+  }
+}

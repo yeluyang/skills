@@ -1,0 +1,11 @@
+{
+  "name": "git",
+  "version": "0.1.0",
+  "description": "Git workflows and repository operations toolkit",
+  "author": {
+    "name": "yeluyang",
+    "url": "https://github.com/yeluyang"
+  },
+  "repository": "https://github.com/yeluyang/skills",
+  "license": "MIT"
+}
