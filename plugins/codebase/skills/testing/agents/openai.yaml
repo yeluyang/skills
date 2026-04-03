@@ -1,0 +1,4 @@
+interface:
+  display_name: "Testing"
+  short_description: "Design and execute test coverage plans"
+  default_prompt: "Use $testing to analyze the target code, design the required tests, audit existing coverage, and execute a gap-closing test plan."

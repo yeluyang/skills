@@ -57,10 +57,10 @@ Because the personal marketplace file lives at `~/.agents/plugins/marketplace.js
 
 ## Available Plugins
 
-| Plugin                        | Description                                                                                                                                                                              | Version |
-| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
-| [codebase](plugins/codebase/) | Codebase understanding, documentation, refactoring, and testing toolkit — project type detection, guided walkthrough, CLAUDE.md generation, pattern-based refactoring, and test analysis | 0.6.0   |
-| [git](plugins/git/)           | Git workflows and repository operations toolkit                                                                                                                                          | 0.1.0   |
+| Plugin                        | Description                                                                                                                                                                                                     | Version |
+| ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| [codebase](plugins/codebase/) | Codebase understanding, documentation, refactoring, and testing toolkit — project type detection, guided walkthrough, agent-memory generation and synchronization, pattern-based refactoring, and test analysis | 0.7.1   |
+| [git](plugins/git/)           | Git workflows and repository operations toolkit                                                                                                                                                                 | 0.1.0   |
 
 ## Repo Layout
 

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Project Memory"
+  short_description: "Generate and sync agent memory files"
+  default_prompt: "Use $codebase:memory to analyze this repository, generate AGENTS.md by default, and keep sibling memory files such as CLAUDE.md aligned."

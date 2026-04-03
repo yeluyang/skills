@@ -1,0 +1,4 @@
+interface:
+  display_name: "Codebase Walkthrough"
+  short_description: "Map an unfamiliar repository step by step"
+  default_prompt: "Use $walkthrough to build a structured understanding of this repository, from project overview through dependencies, build/test workflow, and deeper request-path analysis."

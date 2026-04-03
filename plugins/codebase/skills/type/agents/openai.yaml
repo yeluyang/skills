@@ -1,0 +1,4 @@
+interface:
+  display_name: "Project Type"
+  short_description: "Detect repo type, stack, and complexity"
+  default_prompt: "Use $type to classify this repository, identify its primary languages and frameworks, and summarize the structural signals behind that classification."

@@ -41,4 +41,4 @@ When all tasks are done:
 
 1. Run the full test suite — verify no regressions across all changes
 2. Report: what was refactored, patterns applied, issues encountered
-3. Remind the user to update project documentation (`CLAUDE.md`, `README.md`) if architecture changed
+3. Remind the user to update project documentation (`AGENTS.md`, `CLAUDE.md`, `README.md`, and other agent-memory files) if architecture changed

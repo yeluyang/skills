@@ -114,8 +114,9 @@ For co-authors:
 - If the user provides incomplete co-author information, try to recover the missing fields from Git history before asking follow-up questions. Prefer `git log --format='%an <%ae>' --all` and nearby history over guessing.
 - If the name or email still cannot be resolved reliably, ask the user for the missing information instead of fabricating it.
 
-Always ask whether the user wants to add the agent itself as a co-author footer.
-When the user says yes, format the agent footer exactly as `Co-Authored-By: <Agent Name> <Model Name> <email>`.
+Add the agent itself as a co-author footer by default.
+Skip the agent footer only when the user explicitly says not to include an agent co-author footer.
+When included, format the agent footer exactly as `Co-Authored-By: <Agent Name> <Model Name> <email>`.
 Examples:
 
 - `Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>`
@@ -125,4 +126,4 @@ Examples:
 
 Return the proposed commit message text only, formatted exactly as it should be used.
 
-If you still need user input for co-author resolution or for the optional agent co-author footer, ask one concise follow-up question after the draft instead of performing the commit yourself.
+If you still need user input for co-author resolution, ask one concise follow-up question after the draft instead of performing the commit yourself.

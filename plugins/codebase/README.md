@@ -1,6 +1,6 @@
 # codebase
 
-Codebase understanding, documentation, refactoring, and testing toolkit — project type detection, guided walkthrough, CLAUDE.md generation, pattern-based refactoring, and comprehensive test coverage analysis.
+Codebase understanding, documentation, refactoring, and testing toolkit — project type detection, guided walkthrough, agent-memory generation and synchronization, pattern-based refactoring, and comprehensive test coverage analysis.
 
 This plugin ships one shared `skills/` payload, with separate plugin metadata for Claude Code and Codex.
 
@@ -9,7 +9,7 @@ This plugin ships one shared `skills/` payload, with separate plugin metadata fo
 ### Skills
 
 - **`type`** (`$type` in Codex, `/codebase:type` in Claude Code) — Detect project type, primary languages, frameworks, and package managers by examining build files, manifests, entry points, and directory structure
-- **`claude-md`** (`$claude-md` in Codex, `/codebase:claude-md` in Claude Code) — Deep-analyze a codebase and generate or update CLAUDE.md with agent-optimized project documentation. Uses the skill: `$type` for project detection.
+- **`memory`** (`$codebase:memory` in Codex, `/codebase:memory` in Claude Code) — Deep-analyze a codebase and generate or update project memory. Defaults to `AGENTS.md`, supports agent-specific targets such as `CLAUDE.md`, and keeps sibling memory files synchronized. Uses the skill: `$type` for project detection.
 - **`walkthrough`** (`$walkthrough` in Codex, `/codebase:walkthrough` in Claude Code) — Structured 7-step interactive workflow for understanding an unfamiliar codebase, with adaptive routing based on project type. Uses the skill: `$type` for project detection.
   1. Project Overview
   2. Dependencies
@@ -71,7 +71,8 @@ This lets Codex discover `codebase` from any project on that machine without cop
 ## Usage
 
 - **Detect project type:** invoke the skill: `$type` in Codex, or `/codebase:type` in Claude Code
-- **Generate CLAUDE.md:** invoke the skill: `$claude-md` in Codex, or `/codebase:claude-md` in Claude Code
+- **Generate project memory:** invoke the skill: `$codebase:memory` in Codex, or `/codebase:memory` in Claude Code
+- **Target a specific agent:** append an agent selector, for example `$codebase:memory claude` to generate or refresh `CLAUDE.md`
 - **Explore a codebase:** invoke the skill: `$walkthrough` in Codex, or `/codebase:walkthrough` in Claude Code
 - **Refactor code:** invoke the skill: `$refactor-to-pattern` in Codex, or `/codebase:refactor-to-pattern` in Claude Code
 - **Add test coverage:** invoke the skill: `$testing` in Codex, or `/codebase:testing` in Claude Code

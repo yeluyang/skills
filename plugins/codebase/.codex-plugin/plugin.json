@@ -1,7 +1,7 @@
 {
   "name": "codebase",
-  "version": "0.6.0",
-  "description": "Codebase understanding, documentation, refactoring, and testing toolkit — project type detection, guided walkthrough, CLAUDE.md generation, pattern-based refactoring, and comprehensive test coverage analysis",
+  "version": "0.7.1",
+  "description": "Codebase understanding, documentation, refactoring, and testing toolkit — project type detection, guided walkthrough, agent-memory generation and synchronization, pattern-based refactoring, and comprehensive test coverage analysis",
   "author": {
     "name": "yeluyang",
     "url": "https://github.com/yeluyang"
@@ -13,7 +13,7 @@
   "interface": {
     "displayName": "Codebase",
     "shortDescription": "Understand, document, refactor, and test codebases",
-    "longDescription": "Use Codebase to detect project type, walk an unfamiliar repository, generate or refresh CLAUDE.md, plan pattern-driven refactors, and analyze or expand test coverage.",
+    "longDescription": "Use Codebase to detect project type, walk an unfamiliar repository, generate or synchronize project memory such as AGENTS.md and CLAUDE.md, plan pattern-driven refactors, and analyze or expand test coverage.",
     "developerName": "yeluyang",
     "category": "Coding",
     "capabilities": [
@@ -24,7 +24,7 @@
     "websiteURL": "https://github.com/yeluyang/skills",
     "defaultPrompt": [
       "Audit this repo and tell me what kind of project it is.",
-      "Walk me through this codebase and generate a quick reference.",
+      "Generate AGENTS.md for this repo and sync any existing CLAUDE.md.",
       "Plan a refactor and identify the test gaps before coding."
     ]
   }
