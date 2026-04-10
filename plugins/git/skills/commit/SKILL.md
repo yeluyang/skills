@@ -1,6 +1,6 @@
 ---
 name: git:commit
-description: Invoke the skill: `$git:message` to generate a commit message, then create the Git commit non-interactively. Use when Codex needs to commit either the already-staged changes or the full current working tree relative to `HEAD`, while preserving a review-friendly message and footer handling. Trigger for requests such as `$git:commit` or `$git:commit HEAD`, especially when the user wants safe staging behavior and a clean commit created from the drafted message.
+description: "Invoke the skill: `$git:message` to generate a commit message, then create the Git commit non-interactively. Use when Codex needs to commit either the already-staged changes or the full current working tree relative to `HEAD`, while preserving a review-friendly message and footer handling. Trigger for requests such as `$git:commit` or `$git:commit HEAD`, especially when the user wants safe staging behavior and a clean commit created from the drafted message."
 ---
 
 # Create Git Commits
