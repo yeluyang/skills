@@ -2,14 +2,14 @@
 
 Git workflows and repository operations toolkit.
 
-This plugin ships shared Git-oriented skills, with separate plugin metadata for Claude Code and Codex.
+This plugin ships shared Git-oriented skills with a Claude Code manifest, while keeping optional per-agent helpers under `skills/*/agents/*.yaml` for `vercel-labs/skills` users.
 
 ## Components
 
 ### Skills
 
-- **`message`** (`$git:message` in Codex, `/git:message` in Claude Code) - Generate a git-log-review-friendly commit message from staged changes, the current working tree, or a commit-to-working-tree range. The skill drafts the message only and does not perform the commit.
-- **`commit`** (`$git:commit` in Codex, `/git:commit` in Claude Code) - Prepare the correct staged change set, delegate message drafting to `$git:message`, and create the commit non-interactively.
+- **`git:message`** (`/git:message` in Claude Code; skill name `git:message` in `vercel-labs/skills`) - Generate a git-log-review-friendly commit message from staged changes, the current working tree, or a commit-to-working-tree range. The skill drafts the message only and does not perform the commit.
+- **`git:commit`** (`/git:commit` in Claude Code; skill name `git:commit`) - Prepare the correct staged change set, delegate message drafting to `git:message`, and create the commit non-interactively.
 
 ## Installation
 
@@ -22,41 +22,22 @@ This plugin ships shared Git-oriented skills, with separate plugin metadata for 
 
 Then restart Claude Code.
 
-### Codex
+### vercel-labs/skills
 
-To make this plugin available from any working directory, clone the repo to a stable path such as `~/src/github.com/yeluyang/skills`, then register it from `~/.agents/plugins/marketplace.json` with:
-
-```json
-{
-  "name": "yeluyang-skills",
-  "interface": {
-    "displayName": "yeluyang skills"
-  },
-  "plugins": [
-    {
-      "name": "git",
-      "source": {
-        "source": "local",
-        "path": "./src/github.com/yeluyang/skills/plugins/git"
-      },
-      "policy": {
-        "installation": "AVAILABLE",
-        "authentication": "ON_INSTALL"
-      },
-      "category": "Coding"
-    }
-  ]
-}
+```bash
+npx skills add yeluyang/skills --list
+npx skills add yeluyang/skills --skill git:message --skill git:commit -a claude-code
 ```
 
-This lets Codex discover `git` from any project on that machine without copying the plugin out of the repo.
+To target other agents, replace `-a claude-code` with your agent id.
 
 ## Usage
 
-- **Draft a commit message from staged changes:** invoke `$git:message` or `$git:message staged`
+- **Draft a commit message from staged changes (Claude Code):** `/git:message` or `/git:message staged`
   The no-argument form starts with staged changes and automatically falls back to `HEAD` when the staged diff is empty.
-- **Draft a commit message from the full working tree:** invoke `$git:message HEAD`
-- **Draft a squash-ready message from a historical anchor:** invoke `$git:message <commit>`
-- **Commit the current staged changes:** invoke `$git:commit`
+- **Draft a commit message from the full working tree (Claude Code):** `/git:message HEAD`
+- **Draft a squash-ready message from a historical anchor (Claude Code):** `/git:message <commit>`
+- **Commit the current staged changes (Claude Code):** `/git:commit`
   The no-argument form prefers the staged set, but automatically promotes to full-working-tree `HEAD` mode when nothing is staged.
-- **Stage and commit the full working tree:** invoke `$git:commit HEAD`
+- **Stage and commit the full working tree (Claude Code):** `/git:commit HEAD`
+- **Other agents via `vercel-labs/skills`:** invoke skill names `git:message` and `git:commit` in your agent workflow.

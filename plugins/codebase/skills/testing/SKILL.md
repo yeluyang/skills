@@ -1,5 +1,5 @@
 ---
-name: testing
+name: codebase:testing
 description: Analyze codebase to design and implement comprehensive test coverage — top-down code analysis, bottom-up test design, edge case focus, existing test audit, and agent team execution
 ---
 
@@ -49,7 +49,7 @@ Execute steps in order. Each step is documented in its own file — **read the s
 
 | Step | File                           | Goal                                                                |
 | ---- | ------------------------------ | ------------------------------------------------------------------- |
-| 0    | _(this file)_                  | Detect scope, invoke the `$type` skill, route to steps              |
+| 0    | _(this file)_                  | Detect scope, then invoke the skill: `$codebase:type`, then route to steps   |
 | 1    | `step-1-code-analysis.md`      | Top-down: trace call chains, identify leaf functions, categorize    |
 | 2    | `step-2-test-design.md`        | Bottom-up: design tests from leaves upward, edge cases, flags       |
 | 3    | `step-3-existing-audit.md`     | Audit existing tests: keep, modify, delete, identify gaps           |
@@ -70,7 +70,7 @@ Before entering the step files:
    | Directory or package path       | That subtree — analyze all testable code within                  |
    | Specific file, class, or method | That target — trace its call chain, analyze from there           |
 
-2. **Invoke the skill: `$type`** to detect project type, languages, frameworks, and test tooling
+2. **Invoke the skill: `$codebase:type`** to detect project type, languages, frameworks, and test tooling
 3. **Identify test conventions** from project detection: test runner, test file naming, test directory structure, assertion libraries, mock frameworks
 
 Log scope and detection results, then proceed to Step 1.

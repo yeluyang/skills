@@ -1,13 +1,13 @@
 ---
-name: commit
-description: Generate a commit message via `$git:message` and create the Git commit non-interactively. Use when Codex needs to commit either the already-staged changes or the full current working tree relative to `HEAD`, while preserving a review-friendly message and footer handling. Trigger for requests such as `$git:commit` or `$git:commit HEAD`, especially when the user wants safe staging behavior and a clean commit created from the drafted message.
+name: git:commit
+description: Invoke the skill: `$git:message` to generate a commit message, then create the Git commit non-interactively. Use when Codex needs to commit either the already-staged changes or the full current working tree relative to `HEAD`, while preserving a review-friendly message and footer handling. Trigger for requests such as `$git:commit` or `$git:commit HEAD`, especially when the user wants safe staging behavior and a clean commit created from the drafted message.
 ---
 
 # Create Git Commits
 
 ## Overview
 
-Prepare the correct staged change set, delegate message drafting to `$git:message`, and create the commit with that exact message.
+Prepare the correct staged change set, invoke the skill: `$git:message` to draft the message, and create the commit with that exact message.
 Handle commit creation only after the message is fully resolved. Do not open an editor or rely on interactive Git flows.
 
 ## Workflow
@@ -18,15 +18,15 @@ This skill supports only two scope modes:
 
 - `$git:commit`
   Start by treating the commit target as the current staged set only.
-  If the staged diff is non-empty, keep the conservative staged-only behavior and draft the message by invoking `$git:message staged`.
+  If the staged diff is non-empty, keep the conservative staged-only behavior and invoke the skill with argument: `$git:message staged`.
   If the staged diff is empty, interpret the no-argument call as an implicit request to commit the full working tree and promote the flow to `HEAD` mode automatically.
 - `$git:commit HEAD`
   Stage the full working tree first with `git add -A`.
   After staging, verify that no unstaged tracked changes or untracked files remain.
-  Then draft the message by invoking `$git:message staged`.
+  Then invoke the skill with argument: `$git:message staged`.
 
 This skill intentionally does not support commit-range scopes such as `$git:commit <commit>`.
-If the user needs a squash-style message for a historical range, route them to `$git:message <commit>` instead of guessing.
+If the user needs a squash-style message for a historical range, invoke the skill with argument: `$git:message <commit>` instead of guessing.
 
 ### 2. Prepare the commit set safely
 
@@ -48,7 +48,7 @@ Treat the implicit fallback as a user-experience optimization, not as a redefini
 
 ### 3. Pass through message-related inputs
 
-Forward all message-shaping inputs to `$git:message` unchanged, especially:
+When you invoke the skill: `$git:message`, forward all message-shaping inputs unchanged, especially:
 
 - the resolved scope, which is always `staged` once the commit set is ready
 - any user-provided co-author information

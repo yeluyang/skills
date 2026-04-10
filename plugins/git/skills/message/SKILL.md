@@ -1,5 +1,5 @@
 ---
-name: message
+name: git:message
 description: Generate a git-log-review-friendly commit message from repository changes. Use when Codex needs to inspect staged changes, the current working tree relative to `HEAD`, or a commit-to-working-tree range and draft only the commit message text in a conventional-commit-style format, without creating the commit. Trigger for requests such as `$git:message`, `$git:message staged`, `$git:message HEAD`, or `$git:message <commit>`, especially when the user wants a squash-ready summary of the most important changes.
 ---
 
@@ -117,10 +117,6 @@ For co-authors:
 Add the agent itself as a co-author footer by default.
 Skip the agent footer only when the user explicitly says not to include an agent co-author footer.
 When included, format the agent footer exactly as `Co-Authored-By: <Agent Name> <Model Name> <email>`.
-Examples:
-
-- `Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>`
-- `Co-Authored-By: Codex GPT-5.4 <noreply@openai.com>`
 
 ### 7. Output contract
 

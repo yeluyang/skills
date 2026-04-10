@@ -1,6 +1,6 @@
 {
   "name": "yeluyang-skills",
-  "description": "Personal Claude Code skills marketplace by yeluyang",
+  "description": "Personal Claude Code skills marketplace with vercel-labs/skills-compatible payloads by yeluyang",
   "owner": {
     "name": "yeluyang",
     "url": "https://github.com/yeluyang"
@@ -9,7 +9,7 @@
     {
       "name": "codebase",
       "description": "Codebase understanding, documentation, refactoring, and testing toolkit — project type detection, guided walkthrough, agent-memory generation and synchronization, pattern-based refactoring, and comprehensive test coverage analysis",
-      "version": "0.7.1",
+      "version": "0.9.0",
       "source": "./plugins/codebase",
       "author": {
         "name": "yeluyang"
@@ -18,7 +18,7 @@
     {
       "name": "git",
       "description": "Git workflows and repository operations toolkit",
-      "version": "0.1.0",
+      "version": "0.3.0",
       "source": "./plugins/git",
       "author": {
         "name": "yeluyang"

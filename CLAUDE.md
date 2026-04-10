@@ -2,7 +2,7 @@
 
 ## Overview
 
-This repo is a content-only personal plugin marketplace for Claude Code and Codex. Shared plugin payloads live once under `plugins/<name>/`, while each host gets its own manifest layer and installation surface. The trade-off is deliberate metadata duplication: prompt content stays single-sourced, but version bumps and public descriptions must stay synchronized across marketplace files, plugin manifests, and README surfaces.
+This repo is a content-only personal plugin marketplace for Claude Code, with shared skill payloads that are also consumable by `vercel-labs/skills`. Prompt content stays single-sourced under `plugins/<name>/`, while Claude Code uses marketplace/manifests and other agents consume the same `SKILL.md` payloads through the open `skills` CLI.
 
 ## Architecture
 
@@ -11,7 +11,6 @@ This repo is a content-only personal plugin marketplace for Claude Code and Code
 README.md                              Repo-level installation and plugin index
 plugins/<plugin>/
   .claude-plugin/plugin.json           Claude Code manifest
-  .codex-plugin/plugin.json            Codex manifest + interface metadata
   README.md                            Human-facing plugin docs
   skills/<skill>/SKILL.md              Canonical skill prompt with YAML frontmatter
   skills/<skill>/<aux>.md              Step guides or reference material for complex skills
@@ -19,13 +18,13 @@ plugins/<plugin>/
   commands/<command>.md                Optional shared slash-command content
 ```
 
-Host discovery happens through manifest files, not executable entry points. New shipped content belongs under `plugins/<plugin>/`. Root files mainly index, describe, or register plugins. Treat `.claude/settings.local.json` as local workspace configuration, not product content.
+Host discovery happens through manifests (`.claude-plugin`) and skill metadata (`SKILL.md` + optional `agents/*.yaml`), not executable entry points. New shipped content belongs under `plugins/<plugin>/`. Root files mainly index, describe, or register plugins. Treat `.claude/settings.local.json` as local workspace configuration, not product content.
 
 ## Conventions
 
 - Plugin directories and skill directories use kebab-case, and the directory name matches the exported plugin or skill name.
-- Every shipped plugin keeps `.claude-plugin/plugin.json` and `.codex-plugin/plugin.json` side by side. Shared metadata fields (`name`, `version`, `description`, `author`, `repository`, `license`) must stay aligned.
-- Codex manifests additionally own `skills`, `interface`, `capabilities`, `category`, and `defaultPrompt`. Update them whenever the discoverable surface changes.
+- Every shipped plugin keeps `plugins/<plugin>/.claude-plugin/plugin.json`.
+- Shared metadata fields (`name`, `version`, `description`, `author`, `repository`, `license`) must stay aligned between plugin manifests and `.claude-plugin/marketplace.json` entries.
 - Skill entry files are always `SKILL.md` with YAML frontmatter (`name`, `description`) followed by the prompt body.
 - Auxiliary markdown files do not use frontmatter. Use `step-N-<description>.md` for ordered workflows and descriptive kebab-case names such as `layer-reference.md` for reference material.
 - Agent-specific helper prompts live under `skills/<skill>/agents/<provider>.yaml`.
@@ -40,13 +39,14 @@ Host discovery happens through manifest files, not executable entry points. New 
 ### Add a New Plugin
 
 1. Create `plugins/<plugin>/`.
-2. Add both manifests:
+2. Add the Claude manifest:
    - `plugins/<plugin>/.claude-plugin/plugin.json`
-   - `plugins/<plugin>/.codex-plugin/plugin.json`
 3. Add shared payloads as needed: `skills/`, `commands/`, `hooks/`, `agents/`, `.mcp.json`, plus a plugin `README.md`.
 4. Register the plugin in `.claude-plugin/marketplace.json`.
 5. Update the root `README.md` and the plugin `README.md` if the public installation or usage surface changed.
-6. For Codex, remember installation is machine-local through `~/.agents/plugins/marketplace.json`; do not vendor that file into this repo.
+6. Validate discoverability with both install paths:
+   - Claude Code plugin install
+   - `npx skills add yeluyang/skills --list`
 7. Commit, push, and tag a release.
 
 ### Add or Rename a Skill
@@ -54,7 +54,7 @@ Host discovery happens through manifest files, not executable entry points. New 
 1. Create `plugins/<plugin>/skills/<skill>/SKILL.md` with `name` and `description` frontmatter.
 2. If the skill is multi-step, add step/reference files beside it instead of embedding the whole workflow in one prompt.
 3. Update the plugin README component list and usage examples.
-4. If the skill is surfaced in manifest `defaultPrompt` text or other docs, update those references too.
+4. If the skill is surfaced in docs or install snippets, update those references too.
 5. If the rename affects cross-skill references, audit every reference for stale skill names or stale step numbers.
 
 ### Change Any Shipped Plugin Content
@@ -62,7 +62,6 @@ Host discovery happens through manifest files, not executable entry points. New 
 1. Edit the shared Markdown, JSON, or YAML payload.
 2. Bump the plugin version in:
    - `plugins/<plugin>/.claude-plugin/plugin.json`
-   - `plugins/<plugin>/.codex-plugin/plugin.json`
    - `.claude-plugin/marketplace.json` for that plugin
 3. Keep semver discipline:
    - Patch for wording tweaks or small prompt refinements
@@ -76,7 +75,6 @@ Host discovery happens through manifest files, not executable entry points. New 
 | ---------------------- | -------------------------------------------------------- | --------------------------------------------------------------------------------- |
 | Marketplace entry      | `.claude-plugin/marketplace.json`                        | Registers each plugin name, version, description, and source path for Claude Code |
 | Claude plugin manifest | `plugins/<plugin>/.claude-plugin/plugin.json`            | Minimal distributable metadata for Claude Code                                    |
-| Codex plugin manifest  | `plugins/<plugin>/.codex-plugin/plugin.json`             | Codex metadata plus UI/interface fields and the relative `skills` root            |
 | Skill prompt           | `plugins/<plugin>/skills/<skill>/SKILL.md`               | Canonical task contract for a skill                                               |
 | Step/reference file    | `plugins/<plugin>/skills/<skill>/*.md`                   | Breaks complex workflows into ordered steps or reusable reference material        |
 | Agent helper config    | `plugins/<plugin>/skills/<skill>/agents/<provider>.yaml` | Optional provider-specific prompt preset layered on top of the shared skill       |
@@ -93,7 +91,7 @@ rg --files plugins
 ### Check Version Sync
 
 ```bash
-rg -n '"version"' .claude-plugin/marketplace.json plugins/*/.claude-plugin/plugin.json plugins/*/.codex-plugin/plugin.json
+rg -n '"version"' .claude-plugin/marketplace.json plugins/*/.claude-plugin/plugin.json
 ```
 
 ### Review Docs and Metadata Before Commit
@@ -110,9 +108,9 @@ Claude Code:
   /plugin marketplace add yeluyang/skills
   /plugin install <plugin>@yeluyang-skills
 
-Codex:
-  clone this repo to ~/src/github.com/yeluyang/skills
-  register plugins from ~/.agents/plugins/marketplace.json
+vercel-labs/skills:
+  npx skills add yeluyang/skills --list
+  npx skills add yeluyang/skills --skill <skill> -a <agent>
 ```
 
-There is no in-repo build, test, lint, or CI pipeline today. Validation is structural review plus install smoke tests in Claude Code or Codex.
+There is no in-repo build, test, lint, or CI pipeline today. Validation is structural review plus install smoke tests in Claude Code and via `vercel-labs/skills`.

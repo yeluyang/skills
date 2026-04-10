@@ -1,5 +1,5 @@
 ---
-name: memory
+name: codebase:memory
 description: Generate or update project memory for AI agents — default to AGENTS.md, support agent-specific targets such as CLAUDE.md, and keep sibling memory files synchronized while capturing stable architecture, conventions, and operational knowledge
 ---
 
@@ -113,7 +113,7 @@ If the requested agent is unfamiliar, inspect the repo for evidence of its requi
 
 ### 1.4 Detect Project Type & Identify Languages
 
-Invoke the skill: `$type` to detect project type, primary languages, frameworks, and package managers.
+Invoke the skill: `$codebase:type` to detect project type, primary languages, frameworks, and package managers.
 
 ### 1.5 Output
 

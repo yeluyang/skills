@@ -1,5 +1,5 @@
 ---
-name: type
+name: codebase:type
 description: Detect project type, primary languages, frameworks, package managers, and architectural complexity by examining build files, manifests, entry points, and directory structure
 ---
 
