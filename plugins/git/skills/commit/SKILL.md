@@ -66,13 +66,11 @@ Use the message returned by the skill `git:message` exactly as the commit messag
 
 Preserve multi-line bodies and footers safely:
 
-- Write the final message to a temporary file.
-- Run `git commit --file <tempfile>`.
-- Remove the temporary file after the command completes.
-
-Do not use `git commit` without a file when the message contains a body or footer.
-Do not launch the user's editor.
-Do not rewrite the message unless a purely mechanical correction is required before committing.
+- Pass the message via a single-quoted heredoc to avoid shell expansion and prevent cleanup failures:
+  `git commit -m "$(cat <<'EOF'\n<message>\nEOF\n)"`
+- The single quotes around `EOF` disable variable and command substitution inside the heredoc.
+- Do not launch the user's editor.
+- Do not rewrite the message unless a purely mechanical correction is required before committing.
 
 ### 5. Handle failure modes explicitly
 
