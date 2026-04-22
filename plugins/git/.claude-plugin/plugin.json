@@ -1,6 +1,6 @@
 {
   "name": "git",
-  "version": "0.3.0",
+  "version": "0.3.3",
   "description": "Git workflows and repository operations toolkit",
   "author": {
     "name": "yeluyang",

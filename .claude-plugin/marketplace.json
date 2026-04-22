@@ -9,7 +9,7 @@
     {
       "name": "codebase",
       "description": "Codebase understanding, documentation, refactoring, and testing toolkit — project type detection, guided walkthrough, agent-memory generation and synchronization, pattern-based refactoring, and comprehensive test coverage analysis",
-      "version": "0.9.0",
+      "version": "0.9.1",
       "source": "./plugins/codebase",
       "author": {
         "name": "yeluyang"
@@ -18,7 +18,7 @@
     {
       "name": "git",
       "description": "Git workflows and repository operations toolkit",
-      "version": "0.3.0",
+      "version": "0.3.3",
       "source": "./plugins/git",
       "author": {
         "name": "yeluyang"

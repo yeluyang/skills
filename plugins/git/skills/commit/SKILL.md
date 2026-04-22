@@ -1,13 +1,13 @@
 ---
 name: git:commit
-description: "Invoke the skill: `$git:message` to generate a commit message, then create the Git commit non-interactively. Use when Codex needs to commit either the already-staged changes or the full current working tree relative to `HEAD`, while preserving a review-friendly message and footer handling. Trigger for requests such as `$git:commit` or `$git:commit HEAD`, especially when the user wants safe staging behavior and a clean commit created from the drafted message."
+description: "Invoke the skill `git:message` to generate a commit message, then create the Git commit non-interactively. Use when you need to commit either the already-staged changes or the full current working tree relative to `HEAD`, while preserving a review-friendly message and footer handling. Trigger for requests such as the skill `git:commit` or the skill `git:commit` with `HEAD`, especially when the user wants safe staging behavior and a clean commit created from the drafted message."
 ---
 
 # Create Git Commits
 
 ## Overview
 
-Prepare the correct staged change set, invoke the skill: `$git:message` to draft the message, and create the commit with that exact message.
+Prepare the correct staged change set, invoke the skill `git:message` to draft the message, and create the commit with that exact message.
 Handle commit creation only after the message is fully resolved. Do not open an editor or rely on interactive Git flows.
 
 ## Workflow
@@ -16,27 +16,27 @@ Handle commit creation only after the message is fully resolved. Do not open an 
 
 This skill supports only two scope modes:
 
-- `$git:commit`
+- the skill `git:commit` without arguments
   Start by treating the commit target as the current staged set only.
-  If the staged diff is non-empty, keep the conservative staged-only behavior and invoke the skill with argument: `$git:message staged`.
+  If the staged diff is non-empty, keep the conservative staged-only behavior and invoke the skill `git:message` with `staged`.
   If the staged diff is empty, interpret the no-argument call as an implicit request to commit the full working tree and promote the flow to `HEAD` mode automatically.
-- `$git:commit HEAD`
+- the skill `git:commit` with `HEAD`
   Stage the full working tree first with `git add -A`.
   After staging, verify that no unstaged tracked changes or untracked files remain.
-  Then invoke the skill with argument: `$git:message staged`.
+  Then invoke the skill `git:message` with `staged`.
 
-This skill intentionally does not support commit-range scopes such as `$git:commit <commit>`.
-If the user needs a squash-style message for a historical range, invoke the skill with argument: `$git:message <commit>` instead of guessing.
+This skill intentionally does not support commit-range scopes such as the skill `git:commit` with `<commit>`.
+If the user needs a squash-style message for a historical range, invoke the skill `git:message` with `<commit>` instead of guessing.
 
 ### 2. Prepare the commit set safely
 
-For `$git:commit`:
+For the skill `git:commit`:
 
 - Inspect the index with `git diff --staged`.
 - If the staged diff is non-empty, keep the commit scoped to the index and ignore unstaged changes.
-- If the staged diff is empty, do not stop immediately. Promote the workflow to the same preparation path as `$git:commit HEAD`, because the user may have omitted `HEAD` for convenience.
+- If the staged diff is empty, do not stop immediately. Promote the workflow to the same preparation path as the skill `git:commit` with `HEAD`, because the user may have omitted `HEAD` for convenience.
 
-For `$git:commit HEAD`:
+For the skill `git:commit` with `HEAD`:
 
 - Run `git add -A`.
 - Verify that the working tree is now fully staged before proceeding.
@@ -44,23 +44,25 @@ For `$git:commit HEAD`:
 - If verification fails, stop and explain what is still outside the commit instead of committing a partial result.
 - If the staged diff is empty after `git add -A`, stop and say there is nothing to commit.
 
-Treat the implicit fallback as a user-experience optimization, not as a redefinition of explicit scope. Apply it only to `$git:commit` with no argument.
+Treat the implicit fallback as a user-experience optimization, not as a redefinition of explicit scope. Apply it only to the skill `git:commit` with no argument.
 
 ### 3. Pass through message-related inputs
 
-When you invoke the skill: `$git:message`, forward all message-shaping inputs unchanged, especially:
+When you invoke the skill `git:message`, forward all message-shaping inputs unchanged, especially:
 
 - the resolved scope, which is always `staged` once the commit set is ready
 - any user-provided co-author information
 - any user preference that affects footer handling
 
-Do not re-interpret the diff independently when `$git:message` is the designated message generator. Let `$git:message` own the message content.
+Do not re-interpret the diff independently when the skill `git:message` is the designated message generator. Let the skill `git:message` own the message content.
 
-If `$git:message` needs follow-up input, such as unresolved co-author details or confirmation about adding the agent as a co-author, resolve that first and commit only after the final message is complete.
+If the skill `git:message` needs follow-up input, such as unresolved co-author details or confirmation about adding yourself as a co-author, resolve that first and commit only after the final message is complete.
+
+**After the skill `git:message` returns the commit message, you MUST proceed to Step 4. Generating the message is a subroutine of this skill, not the final output. Do not stop after the message is drafted.**
 
 ### 4. Create the commit non-interactively
 
-Use the message returned by `$git:message` exactly as the commit message text.
+Use the message returned by the skill `git:message` exactly as the commit message text.
 
 Preserve multi-line bodies and footers safely:
 
@@ -78,7 +80,7 @@ Stop instead of improvising when any of these occur:
 
 - there is no commit-worthy staged diff
 - `git add -A` does not fully capture the working tree in `HEAD` mode
-- `$git:message` cannot finalize the footer data
+- the skill `git:message` cannot finalize the footer data
 - `git commit` fails because of hooks, conflicts, or repository state
 
 Report the concrete blocker and the command or state that caused it.

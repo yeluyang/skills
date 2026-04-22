@@ -113,7 +113,7 @@ If the requested agent is unfamiliar, inspect the repo for evidence of its requi
 
 ### 1.4 Detect Project Type & Identify Languages
 
-Invoke the skill: `$codebase:type` to detect project type, primary languages, frameworks, and package managers.
+Invoke the skill `codebase:type` to detect project type, primary languages, frameworks, and package managers.
 
 ### 1.5 Output
 

@@ -1,6 +1,6 @@
 ---
 name: git:message
-description: Generate a git-log-review-friendly commit message from repository changes. Use when Codex needs to inspect staged changes, the current working tree relative to `HEAD`, or a commit-to-working-tree range and draft only the commit message text in a conventional-commit-style format, without creating the commit. Trigger for requests such as `$git:message`, `$git:message staged`, `$git:message HEAD`, or `$git:message <commit>`, especially when the user wants a squash-ready summary of the most important changes.
+description: Generate a git-log-review-friendly commit message from repository changes. Use when you need to inspect staged changes, the current working tree relative to `HEAD`, or a commit-to-working-tree range and draft only the commit message text in a conventional-commit-style format, without creating the commit. Trigger for requests such as the skill `git:message`, the skill `git:message` with `staged`, the skill `git:message` with `HEAD`, or the skill `git:message` with `<commit>`, especially when the user wants a squash-ready summary of the most important changes.
 ---
 
 # Generate Commit Messages
@@ -16,16 +16,16 @@ Generate the message only. Do not run `git commit`, `git merge`, `git rebase`, o
 
 Translate the invocation into one concrete diff target before writing anything:
 
-- `$git:message <commit>`: run `git add -N .`, then inspect `git diff <commit>`.
+- the skill `git:message` with `<commit>`: run `git add -N .`, then inspect `git diff <commit>`.
   Treat the scope as every change after that commit up to the current working tree, including staged changes and newly visible untracked files. The user may be preparing a squash; treat that as normal.
-- `$git:message HEAD`: run `git add -N .`, then inspect `git diff HEAD`.
+- the skill `git:message` with `HEAD`: run `git add -N .`, then inspect `git diff HEAD`.
   Treat the scope as the full current working tree plus staged changes relative to `HEAD`.
-- `$git:message staged`: inspect `git diff --staged`.
-- `$git:message` with no argument: start with `git diff --staged` as the conservative default.
+- the skill `git:message` with `staged`: inspect `git diff --staged`.
+- the skill `git:message` with no argument: start with `git diff --staged` as the conservative default.
   If that staged diff is empty, treat the omission as an implicit request for full-working-tree intent discovery: run `git add -N .`, then inspect `git diff HEAD` instead.
 
 Use `git add -N .` only to expose untracked files in diffs. Do not stage additional content.
-Keep explicit scope semantics strict. Apply the fallback only to the no-argument form, not to `$git:message staged`.
+Keep explicit scope semantics strict. Apply the fallback only to the no-argument form, not to the skill `git:message` with `staged`.
 
 If the resolved diff is empty, say so instead of inventing a message.
 
@@ -114,9 +114,35 @@ For co-authors:
 - If the user provides incomplete co-author information, try to recover the missing fields from Git history before asking follow-up questions. Prefer `git log --format='%an <%ae>' --all` and nearby history over guessing.
 - If the name or email still cannot be resolved reliably, ask the user for the missing information instead of fabricating it.
 
-Add the agent itself as a co-author footer by default.
-Skip the agent footer only when the user explicitly says not to include an agent co-author footer.
-When included, format the agent footer exactly as `Co-Authored-By: <Agent Name> <Model Name> <email>`.
+Add yourself as a co-author footer by default.
+Skip the co-author footer only when the user explicitly says not to include it.
+When included, format the footer exactly as `Co-Authored-By: <Agent Name> <Model Name> <email>`.
+
+Examples of correct agent footer format:
+
+```text
+Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
+Co-Authored-By: Claude Code Deepseek Reasoner <noreply@anthropic.com>
+Co-Authored-By: Claude Code GLM 5.1 <noreply@anthropic.com>
+Co-Authored-By: Codex GPT-5 <noreply@openai.com>
+```
+
+Examples of incorrect format — do NOT produce these:
+
+```text
+Co-Authored-By: Claude <noreply@anthropic.com>           # missing model name
+Co-Authored-By: Claude Opus 4.6 (noreply@anthropic.com)  # parentheses instead of angle brackets
+Co-Authored-By: claude-opus-4.6 <noreply@anthropic.com>   # slug instead of display name
+Co-Authored-By: Opus 4.6 <noreply@anthropic.com>          # missing agent brand name
+```
+
+When the user co-author and the agent co-author both appear, place the user co-author first:
+
+```text
+Co-Authored-By: Jane Doe <jane@example.com>
+Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+```
 
 ### 7. Output contract
 

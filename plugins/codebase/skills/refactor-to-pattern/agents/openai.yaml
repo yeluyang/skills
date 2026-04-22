@@ -1,4 +1,4 @@
 interface:
   display_name: "Refactor to Pattern"
   short_description: "Plan structural refactors with test safety"
-  default_prompt: "Use $codebase:refactor-to-pattern to assess test readiness, analyze structural problems, and plan a pattern-driven refactor before changing code."
+  default_prompt: "Invoke the skill `codebase:refactor-to-pattern` to assess test readiness, analyze structural problems, and plan a pattern-driven refactor before changing code."
