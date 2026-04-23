@@ -41,27 +41,48 @@ Treat the branch name as a weak hint only. Ignore vague names or ticket IDs that
 
 ### 3. Infer the review-relevant story
 
-Work backwards from the diff to answer two questions:
+Work backwards from the diff by answering three ordered questions. Question 1 is a factual property of the repository; questions 2 and 3 are judgments about the specific change.
 
-- What is the user's primary intent?
-- Which secondary changes materially affect review and deserve to be highlighted?
+1. **What does this repository actually deliver?** Decide what counts as the repository's product surface before classifying anything. The same diff can imply very different intents depending on this answer.
+   - Code-first repositories deliver executable artifacts (binaries, libraries, services, apps).
+   - Content-first repositories deliver Markdown, prompts, schemas, configuration bundles, design docs, or similar content as the product itself.
+   - Infrastructure-first repositories deliver Terraform modules, Helm charts, CI pipelines, or other operational assets.
+2. **What is the user's primary intent?**
+3. **Which secondary changes materially affect review and deserve to be highlighted?**
 
-Classify the primary intent first:
+#### 3a. Classify the primary intent via a decision tree
 
-- `feat`: add a user-visible capability
-- `fix`: correct a bug
-- `perf`: improve performance characteristics
-- `style`: change formatting only, with no behavior change
-- `test`: change only tests or test fixtures/resources
-- `refactor`: change production code but none of the above fits better
-- `docs`: change documentation or comments without changing code behavior
-- `chore`: change build, CI, metadata, housekeeping, or other non-code and non-doc material
+First gate: does the change modify the repository's delivered product surface, as defined by question 1?
 
-Apply these rules carefully:
+- **Yes — walk the product-affecting chain in order and take the first matching type. The chain is ordered by prominence to a reviewer, so stronger intents pre-empt weaker ones; `refactor` is the catch-all for everything on the product surface that none of the earlier types claim.**
+  1. `feat`: does the change add user-visible capability to the product surface?
+     - Yes: use `feat`.
+     - No: continue.
+  2. `fix`: does the change correct a defect in the product surface?
+     - Yes: use `fix`.
+     - No: continue.
+  3. `perf`: does the change improve performance characteristics of the product surface without changing external behavior?
+     - Yes: use `perf`.
+     - No: continue.
+  4. `style`: is the change limited to formatting or whitespace on the product surface, with no behavior change?
+     - Yes: use `style`.
+     - No: continue.
+  5. `test`: is the change limited to tests or test fixtures that ship with the product surface?
+     - Yes: use `test`.
+     - No: continue.
+  6. `refactor`: fallback — the change restructures the product surface with no external behavior change and none of the above fits. Use `refactor`.
+- **No — the change touches only supporting material. Pick the one that matches the nature of that material:**
+  - `docs`: changes documentation, comments, or prose that supports but is not itself the delivered product.
+  - `chore`: changes build, CI, metadata, tooling, housekeeping, or other ancillary material.
 
-- Comment-only edits inside code files count as `docs`, not code changes.
-- In documentation-first repositories where the content is the product, substantial new end-user content can still be `feat` even without code changes.
-- Do not overuse `feat` just because the diff is large; use it only when the change actually adds user-visible value.
+Apply these disambiguating rules carefully:
+
+- In a content-first repository, substantive new end-user content on the delivered surface is a product change, so it maps to `feat` (or `fix`/`refactor`/etc. as appropriate) — not `docs`. `docs` is reserved for supporting prose that is not itself the product.
+- In a code-first repository, comment-only edits inside source files are supporting prose, so they map to `docs`, not to a code-change type.
+- Do not promote a change to `feat` merely because the diff is large or touches many files. Use `feat` only when the change actually adds user-visible value on the product surface.
+- If a single commit legitimately spans both halves of the tree, pick the type that reflects the dominant review concern and surface the rest through the body and secondary-change highlights.
+
+#### 3b. Rank secondary changes by review value
 
 Then rank secondary changes by review value. Highlight only changes that meaningfully help someone scanning `git log`, such as:
 
@@ -112,7 +133,11 @@ When a body is needed:
 
 #### 4c. Draft footers
 
-Add footer lines only when they are actually needed.
+This step may append up to two kinds of `Co-Authored-By` footers: human co-authors provided by the user, and the agent's own co-author line. The human co-author section is optional and gated on user input; the agent co-author section is mandatory by default and only suppressed on explicit user request. Always place any human co-author lines before the agent line so attribution reads user-first.
+
+##### 4c-i. Add human co-authors (optional)
+
+Add this section only when it is actually needed, i.e. when the user has provided or implied one or more human co-authors. If no human co-author is in scope, skip this subsection entirely.
 
 For co-authors:
 
@@ -120,18 +145,20 @@ For co-authors:
 - If the user provides incomplete co-author information, try to recover the missing fields from Git history before asking follow-up questions. Prefer `git log --format='%an <%ae>' --all` and nearby history over guessing.
 - If the name or email still cannot be resolved reliably, ask the user for the missing information instead of fabricating it.
 
-Add yourself as a co-author footer by default.
-Skip the co-author footer only when the user explicitly says not to include it.
-When included, format the footer exactly as `Co-Authored-By: <Agent Name> <Model Name> <email>`.
+##### 4c-ii. Add the agent co-author (mandatory by default)
+
+Always append exactly one agent co-author line. Skip it only when the user explicitly says not to include it.
+
+Format the line exactly as `Co-Authored-By: <Agent Name> <Model Name> <email>`.
+
+The `<email>` MUST belong to the agent vendor, not to the underlying model vendor. Resolve it from the agent brand: Claude-family agents use `noreply@anthropic.com`, Codex uses `noreply@openai.com`, TraeCli uses `noreply@bytedance.com`, and so on. When the agent runs on a third-party or routed model (for example, an OpenRouter-served model inside a ByteDance agent), the email still tracks the hosting agent, not the model provider. If the agent vendor's noreply domain is unknown, ask the user rather than inventing one.
 
 Examples of correct agent footer format:
 
 ```text
-Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
-Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
-Co-Authored-By: Claude Code Deepseek Reasoner <noreply@anthropic.com>
-Co-Authored-By: Claude Code GLM 5.1 <noreply@anthropic.com>
-Co-Authored-By: Codex GPT-5 <noreply@openai.com>
+Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>               # baseline: agent and model from the same vendor
+Co-Authored-By: Codex GPT-5 <noreply@openai.com>                      # different agent vendor shifts the email domain accordingly
+Co-Authored-By: Claude Code Deepseek Reasoner <noreply@anthropic.com> # mixed vendors: model name reflects the actual runtime model, email tracks the agent vendor — never coerce the model name to match the agent's brand
 ```
 
 Examples of incorrect format — do NOT produce these:
@@ -143,7 +170,7 @@ Co-Authored-By: claude-opus-4.6 <noreply@anthropic.com>   # slug instead of disp
 Co-Authored-By: Opus 4.6 <noreply@anthropic.com>          # missing agent brand name
 ```
 
-When the user co-author and the agent co-author both appear, place the user co-author first:
+When both a human co-author and the agent co-author appear, place the human co-author first:
 
 ```text
 Co-Authored-By: Jane Doe <jane@example.com>
