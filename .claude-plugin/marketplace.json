@@ -18,7 +18,7 @@
     {
       "name": "git",
       "description": "Git workflows and repository operations toolkit",
-      "version": "0.3.4",
+      "version": "0.3.5",
       "source": "./plugins/git",
       "author": {
         "name": "yeluyang"

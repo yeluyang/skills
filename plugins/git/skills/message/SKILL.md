@@ -8,7 +8,7 @@ description: Generate a git-log-review-friendly commit message from repository c
 ## Overview
 
 Inspect the relevant Git diff, infer the primary intent behind the change, and draft a commit message that is easy to scan in `git log`.
-Generate the message only. Do not run `git commit`, `git merge`, `git rebase`, or any other history-changing command.
+Generate the message only. Do not run `git commit`, `git merge`, `git rebase`, or any other history-changing command unless the invoking context explicitly requests it.
 
 ## Workflow
 
@@ -74,7 +74,13 @@ Then rank secondary changes by review value. Highlight only changes that meaning
 
 De-emphasize low-signal collateral, such as opportunistic formatting, minor renames, or trivial comment cleanups, unless they are central to the change.
 
-### 4. Draft the title
+### 4. Draft the commit message
+
+Before writing a single character of the message, lock in one non-negotiable rule: **the entire commit message MUST be written in plain English — title, body, and every footer line.** This overrides every other signal, including the language the user used when invoking the skill, the language of prior commits, branch names, issue titles, code comments, or surrounding documentation, and any inferred locale or team convention. Do NOT emit Chinese, Japanese, Korean, or any other non-English characters anywhere in the output, and do NOT mix languages. Proper nouns, identifiers, file paths, and API names that are already non-English in the codebase stay verbatim, but every surrounding word MUST still be English. If a user request conflicts with this rule, refuse the language switch and produce English anyway.
+
+With that constraint fixed, draft the title, then the body, then the footers in order.
+
+#### 4a. Draft the title
 
 Use this pattern:
 
@@ -92,7 +98,7 @@ Write the description with high information density:
 - Prefer one precise action over a vague umbrella phrase.
 - Do not try to enumerate every side change in the title.
 
-### 5. Draft the body
+#### 4b. Draft the body
 
 Add a body only when it improves clarity.
 
@@ -104,7 +110,7 @@ When a body is needed:
 - Use `-` bullets when describing multiple distinct points.
 - Keep the body focused on reviewer value, not a line-by-line transcript of the diff.
 
-### 6. Draft footers
+#### 4c. Draft footers
 
 Add footer lines only when they are actually needed.
 
@@ -144,8 +150,8 @@ Co-Authored-By: Jane Doe <jane@example.com>
 Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
 ```
 
-### 7. Output contract
+### 5. Output contract
 
 Return the proposed commit message text only, formatted exactly as it should be used.
 
-If you still need user input for co-author resolution, ask one concise follow-up question after the draft instead of performing the commit yourself.
+If you still need user input for co-author resolution, ask one concise follow-up question after the draft instead of committing unilaterally.
