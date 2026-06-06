@@ -35,8 +35,8 @@ Use `-a <agent>` to target any supported agent (`claude-code`, `codex`, `cursor`
 
 | Plugin                        | Description                                                                                                                                                                                                     | Version |
 | ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
-| [codebase](plugins/codebase/) | Codebase understanding, documentation, refactoring, and testing toolkit — project type detection, guided walkthrough, agent-memory generation and synchronization, pattern-based refactoring, and test analysis | 0.9.0   |
-| [git](plugins/git/)           | Git workflows and repository operations toolkit                                                                                                                                                                 | 0.3.0   |
+| [codebase](plugins/codebase/) | Codebase understanding, refactoring, and testing toolkit — project type detection, guided walkthrough, pattern-based refactoring, and test analysis | 0.10.0  |
+| [git](plugins/git/)           | Git workflows and repository operations toolkit                                                                                                    | 0.4.0   |
 
 ## Repo Layout
 

@@ -8,8 +8,8 @@
   "plugins": [
     {
       "name": "codebase",
-      "description": "Codebase understanding, documentation, refactoring, and testing toolkit — project type detection, guided walkthrough, agent-memory generation and synchronization, pattern-based refactoring, and comprehensive test coverage analysis",
-      "version": "0.9.1",
+      "description": "Codebase understanding, refactoring, and testing toolkit — project type detection, guided walkthrough, pattern-based refactoring, and comprehensive test coverage analysis",
+      "version": "0.10.0",
       "source": "./plugins/codebase",
       "author": {
         "name": "yeluyang"
