@@ -18,14 +18,11 @@ This plugin ships one shared `skills/` payload with a Claude Code manifest, whil
   6. Deep Dive
   7. Quick Reference Card
 - **`codebase:refactor-to-pattern`** (`/codebase:refactor-to-pattern` in Claude Code; skill name `codebase:refactor-to-pattern`) — Refactoring workflow: test coverage gate, responsibility analysis, SRP decomposition, cohesion vs decoupling, pattern discovery, spec-driven user review, and execution planning.
-- **`codebase:testing`** (`/codebase:testing` in Claude Code; skill name `codebase:testing`) — Analyze codebase to design and implement comprehensive test coverage — top-down code analysis, bottom-up test design, edge case focus, existing test audit, and agent team execution.
-  1. Code Analysis (top-down call chain tracing)
-  2. Test Design (bottom-up from leaf functions)
-  3. Existing Test Audit (keep/modify/delete)
-  4. Spec Output & User Review
-  5. Plan & Execute (agent team parallelism)
-  6. Coverage Verification (fresh-subagent gap detection loop)
-  7. Test Consolidation (reduce redundancy without losing coverage)
+- **`codebase:testing`** (`/codebase:testing` in Claude Code; skill name `codebase:testing`) — Plan a complete unit test case system for production code, audit what existing tests already cover, fill the gaps, then prune redundancy.
+  1. Plan the test case system (params, implicit inputs, branches)
+  2. Audit existing tests (style + coverage)
+  3. Fill the missing cases
+  4. Prune redundant and valueless cases
 
 ## Installation
 

@@ -1,6 +1,6 @@
 {
   "name": "codebase",
-  "version": "0.10.0",
+  "version": "0.13.0",
   "description": "Codebase understanding, refactoring, and testing toolkit — project type detection, guided walkthrough, pattern-based refactoring, and comprehensive test coverage analysis",
   "author": {
     "name": "yeluyang",

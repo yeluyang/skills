@@ -47,12 +47,12 @@ Steps with a file reference are documented in separate files — **read the file
 Refactoring without tests is flying blind — tests are the safety net that ensures behavior is preserved through structural changes. Before touching any code, verify the refactoring target has adequate coverage.
 
 1. **Invoke the skill `codebase:testing`** on the same scope the user specified for refactoring (whole repo, directory, file, or function)
-2. **Invoke the skill `codebase:testing`**, then execute through Step 3 (Code Analysis → Test Design → Existing Test Audit). Stop after the Step 3 audit report — do not proceed to the remaining steps
-3. **Evaluate the audit** using the gap analysis from the Step 3 output:
+2. **Invoke the skill `codebase:testing`**, then execute through the audit step (Test Design → Existing Test Audit). Stop after the audit — do not proceed to execution
+3. **Evaluate the audit** using the gaps surfaced in the audit output (the to-write and modify items):
 
 **Gate passes — proceed to Step 1** when:
 
-- The "Remaining To-Write" gap list contains no high-priority items targeting core logic of the refactoring scope
+- The audit's to-write items contain no high-priority cases targeting core logic of the refactoring scope
 - Existing tests cover the critical paths that refactoring will restructure
 - The test suite can reliably catch regressions from structural changes
 
@@ -63,8 +63,8 @@ Refactoring without tests is flying blind — tests are the safety net that ensu
 
 When the gate fails:
 
-- Present the gap analysis to the user
-- Recommend: **Invoke the skill `codebase:testing`** and complete the remaining steps beyond Step 3 to close the gaps first
+- Present the audit's gaps to the user
+- Recommend: **Invoke the skill `codebase:testing`** and complete the remaining step (execute) to close the gaps first
 - Explain: refactoring without tests risks silent regressions that go undetected until production
 - After test coverage is adequate, invoke the skill `codebase:refactor-to-pattern` again
 

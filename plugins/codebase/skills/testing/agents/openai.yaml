@@ -1,4 +1,4 @@
 interface:
-  display_name: "Testing"
-  short_description: "Design and execute test coverage plans"
-  default_prompt: "Invoke the skill `codebase:testing` to analyze the target code, design the required tests, audit existing coverage, and execute a gap-closing test plan."
+  display_name: "Unit Testing"
+  short_description: "Plan a unit test case system, audit existing coverage, fill the gaps, and prune"
+  default_prompt: "Invoke the skill `codebase:testing` to plan a unit test case system for the production code in scope, audit what existing tests already cover, fill the missing cases, and prune redundancy."
