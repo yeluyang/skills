@@ -1,4 +1,0 @@
-interface:
-  display_name: "Git Message"
-  short_description: "Draft log-friendly commit messages"
-  default_prompt: "Invoke the skill `git:message` to inspect the relevant diff and draft a git-log-review-friendly commit message only."

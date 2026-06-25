@@ -15,7 +15,7 @@ npx skills add yeluyang/skills --list
 Install selected skills for a target agent:
 
 ```bash
-npx skills add yeluyang/skills --skill codebase:type --skill git:message -a codex
+npx skills add yeluyang/skills --skill codebase:type --skill git:commit -a codex
 ```
 
 Replace `codex` with the agent id you want to target.
@@ -28,8 +28,7 @@ Replace `codex` with the agent id you want to target.
 | `codebase:walkthrough` | `skills/codebase/walkthrough/` | Guided codebase understanding workflow for unfamiliar repositories. |
 | `codebase:refactor-to-pattern` | `skills/codebase/refactor-to-pattern/` | Refactoring workflow covering coverage gates, structural analysis, pattern discovery, and execution planning. |
 | `codebase:testing` | `skills/codebase/testing/` | Plan, audit, fill, and prune unit test coverage for production code. |
-| `git:message` | `skills/git/message/` | Generate a review-friendly commit message from staged, working-tree, or range diffs. |
-| `git:commit` | `skills/git/commit/` | Prepare the intended change set, delegate message drafting, and create the commit non-interactively. |
+| `git:commit` | `skills/git/commit/` | Prepare the intended change set, draft a review-friendly commit message, and create the commit non-interactively. |
 
 ## Repo Layout
 

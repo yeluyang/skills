@@ -23,7 +23,7 @@ Discovery happens through `SKILL.md` metadata. New shipped content belongs under
 ## Conventions
 
 - Skill directories use kebab-case path segments under `skills/<domain>/<skill>/`.
-- Exported skill names in `SKILL.md` may use a namespace such as `codebase:type` or `git:message`.
+- Exported skill names in `SKILL.md` may use a namespace such as `codebase:type` or `git:commit`.
 - Skill entry files are always `SKILL.md` with YAML frontmatter (`name`, `description`) followed by the prompt body.
 - Auxiliary Markdown files do not use frontmatter. Use `step-N-<description>.md` for ordered workflows and descriptive kebab-case names such as `layer-reference.md` for reference material.
 - Agent-specific helper prompts live under `skills/<domain>/<skill>/agents/<provider>.yaml`.
