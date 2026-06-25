@@ -71,4 +71,5 @@ Temporary Items
 nohup.out
 
 ################ Project ################
-# add git ignore rule here
+.agents/
+skills-lock.json

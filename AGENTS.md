@@ -2,115 +2,82 @@
 
 ## Overview
 
-This repo is a content-only personal plugin marketplace for Claude Code, with shared skill payloads that are also consumable by `vercel-labs/skills`. Prompt content stays single-sourced under `plugins/<name>/`, while Claude Code uses marketplace/manifests and other agents consume the same `SKILL.md` payloads through the open `skills` CLI.
+This repo is a content-only `vercel-labs/skills` repository. Prompt content lives directly under `skills/**/SKILL.md`.
+
+There are no Claude Code marketplace manifests, plugin wrappers, or version metadata to maintain.
 
 ## Architecture
 
 ```text
-.claude-plugin/marketplace.json        Claude Code marketplace index for this repo
-README.md                              Repo-level installation and plugin index
-plugins/<plugin>/
-  .claude-plugin/plugin.json           Claude Code manifest
-  README.md                            Human-facing plugin docs
-  skills/<skill>/SKILL.md              Canonical skill prompt with YAML frontmatter
-  skills/<skill>/<aux>.md              Step guides or reference material for complex skills
-  skills/<skill>/agents/<provider>.yaml Optional provider-specific prompt helpers
-  commands/<command>.md                Optional shared slash-command content
+README.md
+skills/
+  <domain>/
+    <skill>/
+      SKILL.md                         Canonical skill prompt with YAML frontmatter
+      agents/<provider>.yaml           Optional provider-specific helper metadata
+      <aux>.md                         Optional step guides or reference material
 ```
 
-Host discovery happens through manifests (`.claude-plugin`) and skill metadata (`SKILL.md` + optional `agents/*.yaml`), not executable entry points. New shipped content belongs under `plugins/<plugin>/`. Root files mainly index, describe, or register plugins. Treat `.claude/settings.local.json` as local workspace configuration, not product content.
+Discovery happens through `SKILL.md` metadata. New shipped content belongs under `skills/`. Treat `.claude/settings.local.json`, `.agents/`, and `skills-lock.json` as local workspace state, not product content.
 
 ## Conventions
 
-- Plugin directories and skill directories use kebab-case, and the directory name matches the exported plugin or skill name.
-- Every shipped plugin keeps `plugins/<plugin>/.claude-plugin/plugin.json`.
-- Shared metadata fields (`name`, `version`, `description`, `author`, `repository`, `license`) must stay aligned between plugin manifests and `.claude-plugin/marketplace.json` entries.
+- Skill directories use kebab-case path segments under `skills/<domain>/<skill>/`.
+- Exported skill names in `SKILL.md` may use a namespace such as `codebase:type` or `git:message`.
 - Skill entry files are always `SKILL.md` with YAML frontmatter (`name`, `description`) followed by the prompt body.
-- Auxiliary markdown files do not use frontmatter. Use `step-N-<description>.md` for ordered workflows and descriptive kebab-case names such as `layer-reference.md` for reference material.
-- Agent-specific helper prompts live under `skills/<skill>/agents/<provider>.yaml`.
+- Auxiliary Markdown files do not use frontmatter. Use `step-N-<description>.md` for ordered workflows and descriptive kebab-case names such as `layer-reference.md` for reference material.
+- Agent-specific helper prompts live under `skills/<domain>/<skill>/agents/<provider>.yaml`.
 - Parent skill files may orchestrate step/reference files, but step files should not reference sibling step files or the parent `SKILL.md` directly. Data flow stays parent -> child.
 - When one skill invokes another skill, keep the callee automatable. Avoid wording that forces unnecessary confirmation in sub-skill flows.
 - Skill prompts should describe the goal and desired outcome, not over-constrain the implementation technique. Examples are illustrative, not mandatory.
-- After renaming steps, adding files, or changing workflow structure, audit cross-skill references, plugin READMEs, and any hard-coded step numbers for rot.
+- After renaming steps, adding files, or changing workflow structure, audit cross-skill references, the root README, and any hard-coded step numbers for rot.
 - Root memory files are sibling views of the same project memory. If one changes materially, sync the other.
 
 ## How to Add
 
-### Add a New Plugin
-
-1. Create `plugins/<plugin>/`.
-2. Add the Claude manifest:
-   - `plugins/<plugin>/.claude-plugin/plugin.json`
-3. Add shared payloads as needed: `skills/`, `commands/`, `hooks/`, `agents/`, `.mcp.json`, plus a plugin `README.md`.
-4. Register the plugin in `.claude-plugin/marketplace.json`.
-5. Update the root `README.md` and the plugin `README.md` if the public installation or usage surface changed.
-6. Validate discoverability with both install paths:
-   - Claude Code plugin install
-   - `npx skills add yeluyang/skills --list`
-7. Commit, push, and tag a release.
-
 ### Add or Rename a Skill
 
-1. Create `plugins/<plugin>/skills/<skill>/SKILL.md` with `name` and `description` frontmatter.
+1. Create `skills/<domain>/<skill>/SKILL.md` with `name` and `description` frontmatter.
 2. If the skill is multi-step, add step/reference files beside it instead of embedding the whole workflow in one prompt.
-3. Update the plugin README component list and usage examples.
-4. If the skill is surfaced in docs or install snippets, update those references too.
-5. If the rename affects cross-skill references, audit every reference for stale skill names or stale step numbers.
+3. Update the root README when the public skill list, install snippets, or usage surface changes.
+4. If the rename affects cross-skill references, audit every reference for stale skill names or stale step numbers.
+5. Validate discoverability with `npx skills add . --list`.
 
-### Change Any Shipped Plugin Content
+### Change Any Shipped Skill Content
 
-1. Edit the shared Markdown, JSON, or YAML payload.
-2. Bump the plugin version in:
-   - `plugins/<plugin>/.claude-plugin/plugin.json`
-   - `.claude-plugin/marketplace.json` for that plugin
-3. Keep semver discipline:
-   - Patch for wording tweaks or small prompt refinements
-   - Minor for new skills or commands, or for substantial workflow changes
-   - Major for breaking behavior changes
-4. Diff the matching README and manifest surfaces before committing.
+1. Edit the shared Markdown or YAML payload under `skills/`.
+2. Keep related helper metadata in `agents/*.yaml` aligned with the parent `SKILL.md`.
+3. Diff the matching README and skill surfaces before committing.
 
 ## Key Entities
 
-| Entity                 | Location                                                 | Role                                                                              |
-| ---------------------- | -------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| Marketplace entry      | `.claude-plugin/marketplace.json`                        | Registers each plugin name, version, description, and source path for Claude Code |
-| Claude plugin manifest | `plugins/<plugin>/.claude-plugin/plugin.json`            | Minimal distributable metadata for Claude Code                                    |
-| Skill prompt           | `plugins/<plugin>/skills/<skill>/SKILL.md`               | Canonical task contract for a skill                                               |
-| Step/reference file    | `plugins/<plugin>/skills/<skill>/*.md`                   | Breaks complex workflows into ordered steps or reusable reference material        |
-| Agent helper config    | `plugins/<plugin>/skills/<skill>/agents/<provider>.yaml` | Optional provider-specific prompt preset layered on top of the shared skill       |
+| Entity | Location | Role |
+| --- | --- | --- |
+| Skill prompt | `skills/<domain>/<skill>/SKILL.md` | Canonical task contract for a skill |
+| Step/reference file | `skills/<domain>/<skill>/*.md` | Breaks complex workflows into ordered steps or reusable reference material |
+| Agent helper config | `skills/<domain>/<skill>/agents/<provider>.yaml` | Optional provider-specific prompt preset layered on top of the shared skill |
 
 ## Commands
 
 ### Inspect Structure
 
 ```bash
-find plugins -type f | sort
-rg --files plugins
+find skills -type f | sort
+rg --files skills
 ```
 
-### Check Version Sync
+### Review Before Commit
 
 ```bash
-rg -n '"version"' .claude-plugin/marketplace.json plugins/*/.claude-plugin/plugin.json
-```
-
-### Review Docs and Metadata Before Commit
-
-```bash
-git diff -- README.md .claude-plugin/marketplace.json plugins
+git diff -- README.md AGENTS.md CLAUDE.md skills
 git status --short
 ```
 
-### Validate by Installation
+### Validate Installation
 
-```text
-Claude Code:
-  /plugin marketplace add yeluyang/skills
-  /plugin install <plugin>@yeluyang-skills
-
-vercel-labs/skills:
-  npx skills add yeluyang/skills --list
-  npx skills add yeluyang/skills --skill <skill> -a <agent>
+```bash
+npx skills add . --list
+npx skills add . --skill <skill> -a <agent>
 ```
 
-There is no in-repo build, test, lint, or CI pipeline today. Validation is structural review plus install smoke tests in Claude Code and via `vercel-labs/skills`.
+There is no in-repo build, test, lint, or CI pipeline today. Validation is structural review plus `vercel-labs/skills` install smoke tests.

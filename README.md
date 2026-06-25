@@ -1,64 +1,60 @@
 # yeluyang-skills
 
-Personal plugin marketplace for Claude Code, with shared skill payloads that are also consumable by `vercel-labs/skills`.
+Personal `vercel-labs/skills` repository.
 
-This repo stays content-only: shared `skills/` and `commands/` live once under `plugins/<name>/`.
+Installable skill payloads live directly under `skills/**/SKILL.md`. This repo intentionally does not ship Claude Code marketplace manifests or plugin wrappers.
 
 ## Installation
 
-### Claude Code
-
-Add this marketplace:
-
-```text
-/plugin marketplace add yeluyang/skills
-```
-
-Then install a plugin:
-
-```text
-/plugin install codebase@yeluyang-skills
-```
-
-### vercel-labs/skills
-
-Install directly from this repository with the open `skills` CLI:
+List available skills:
 
 ```bash
 npx skills add yeluyang/skills --list
-npx skills add yeluyang/skills --skill codebase:type -a claude-code
 ```
 
-Use `-a <agent>` to target any supported agent (`claude-code`, `codex`, `cursor`, etc.).
+Install selected skills for a target agent:
 
-## Available Plugins
+```bash
+npx skills add yeluyang/skills --skill codebase:type --skill git:message -a codex
+```
 
-| Plugin                        | Description                                                                                                                                                                                                     | Version |
-| ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
-| [codebase](plugins/codebase/) | Codebase understanding, refactoring, and testing toolkit — project type detection, guided walkthrough, pattern-based refactoring, and test analysis | 0.10.0  |
-| [git](plugins/git/)           | Git workflows and repository operations toolkit                                                                                                    | 0.4.0   |
+Replace `codex` with the agent id you want to target.
+
+## Available Skills
+
+| Skill | Location | Description |
+| --- | --- | --- |
+| `codebase:type` | `skills/codebase/type/` | Detect project type, languages, frameworks, package managers, and architectural complexity. |
+| `codebase:walkthrough` | `skills/codebase/walkthrough/` | Guided codebase understanding workflow for unfamiliar repositories. |
+| `codebase:refactor-to-pattern` | `skills/codebase/refactor-to-pattern/` | Refactoring workflow covering coverage gates, structural analysis, pattern discovery, and execution planning. |
+| `codebase:testing` | `skills/codebase/testing/` | Plan, audit, fill, and prune unit test coverage for production code. |
+| `git:message` | `skills/git/message/` | Generate a review-friendly commit message from staged, working-tree, or range diffs. |
+| `git:commit` | `skills/git/commit/` | Prepare the intended change set, delegate message drafting, and create the commit non-interactively. |
 
 ## Repo Layout
 
 ```text
-.claude-plugin/marketplace.json           Claude Code marketplace index
-plugins/<name>/
-  .claude-plugin/plugin.json              Claude Code plugin manifest
-  skills/                                 Shared skill payload
-  skills/<skill>/agents/<provider>.yaml   Optional per-agent helper prompt
-  commands/                               Shared slash commands
-  README.md                               Human-facing plugin docs
+README.md
+skills/
+  <domain>/
+    <skill>/
+      SKILL.md                         Required skill prompt with YAML frontmatter
+      agents/<provider>.yaml           Optional per-agent helper metadata
+      <aux>.md                         Optional step guides or reference material
 ```
 
-`vercel-labs/skills` discovers installable skills from repository structure and `SKILL.md` metadata; no `.codex-plugin/plugin.json` files are required.
+`SKILL.md` is the only required file for each skill. Auxiliary Markdown files stay beside the parent `SKILL.md` so relative references remain simple.
 
-## Adding a New Plugin
+Local `skills` CLI runs may create `.agents/` and `skills-lock.json`; both are ignored.
 
-1. Create `plugins/<plugin-name>/`.
-2. Add the Claude Code plugin manifest:
-   `plugins/<plugin-name>/.claude-plugin/plugin.json`
-3. Add shared components as needed: `skills/`, `commands/`, `hooks/`, `agents/`, `.mcp.json`.
-4. Register the plugin in `.claude-plugin/marketplace.json`.
-5. Keep shared metadata aligned between `plugins/<plugin-name>/.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json` (`name`, `version`, `description`, `author`, `repository`, `license`).
-6. Update `README.md` and `plugins/<plugin-name>/README.md` if install or usage surfaces changed.
-7. Commit, push, and tag a release.
+## Adding or Changing Skills
+
+1. Add or edit a skill under `skills/<domain>/<skill>/`.
+2. Keep each `SKILL.md` frontmatter limited to `name` and `description`.
+3. Put ordered workflow files or references beside the parent `SKILL.md`.
+4. Update this README when the public skill list or install examples change.
+5. Validate discoverability with:
+
+```bash
+npx skills add . --list
+```
