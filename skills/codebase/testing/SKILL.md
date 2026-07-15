@@ -1,6 +1,6 @@
 ---
 name: codebase:testing
-description: Plan a complete unit test case system for the production code in scope, audit what existing tests already cover, fill the missing cases, and prune redundancy
+description: Do not invoke this skill proactively.
 ---
 
 # Unit Testing
